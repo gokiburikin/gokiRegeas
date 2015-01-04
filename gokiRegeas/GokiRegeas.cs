@@ -23,6 +23,7 @@ namespace gokiRegeas
         internal static List<string> filePool;
         internal static string currentFilePath;
         internal static Bitmap currentFileBitmap;
+        internal static Bitmap resizedCurrentFileBitmap;
         internal static Regex fileFilter;
         internal static List<string> pathHistory;
         internal static int pathHistoryIndex;

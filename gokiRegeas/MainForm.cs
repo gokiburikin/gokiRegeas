@@ -185,8 +185,12 @@ namespace gokiRegeas
                 float yAspect = (float)pnlDraw.Height / GokiRegeas.currentFileBitmap.Height;
                 xAspect = Math.Min(yAspect, xAspect);
                 yAspect = xAspect;
-                float width = GokiRegeas.currentFileBitmap.Width * xAspect;
-                float height = GokiRegeas.currentFileBitmap.Height * yAspect;
+                int width = (int)(GokiRegeas.currentFileBitmap.Width * xAspect);
+                int height = (int)(GokiRegeas.currentFileBitmap.Height * yAspect);
+                if (  GokiRegeas.resizedCurrentFileBitmap == null || GokiRegeas.resizedCurrentFileBitmap.Width != width || GokiRegeas.resizedCurrentFileBitmap.Height != height)
+                {
+                    GokiRegeas.resizedCurrentFileBitmap = new Bitmap(GokiRegeas.currentFileBitmap, (int)width, (int)height);
+                }
                 float xOffset = (pnlDraw.Width - width) / 2;
                 float yOffset = (pnlDraw.Height - height) / 2;
                 e.Graphics.TranslateTransform(xOffset + width / 2, yOffset + height / 2);
@@ -201,7 +205,7 @@ namespace gokiRegeas
                 e.Graphics.RotateTransform((float)GokiRegeas.viewRotation);
                 e.Graphics.TranslateTransform(-width / 2, -height / 2);
 
-                e.Graphics.DrawImage(GokiRegeas.currentFileBitmap, 0, 0, width, height);
+                e.Graphics.DrawImage(GokiRegeas.resizedCurrentFileBitmap,0,0);
             }
         }
 

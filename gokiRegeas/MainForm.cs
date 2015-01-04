@@ -49,6 +49,8 @@ namespace gokiRegeas
             updateToolStrip();
             updateStatusStrip();
             chooseRandomImage();
+            onImageChange();
+
         }
 
         void pnlDraw_MouseUp(object sender, MouseEventArgs e)
@@ -160,6 +162,7 @@ namespace gokiRegeas
             if ((DateTime.Now - GokiRegeas.startTime).TotalMilliseconds - timePaused > GokiRegeas.length)
             {
                 chooseRandomImage();
+                onImageChange();
                 GokiRegeas.startTime = DateTime.Now;
             }
         }
@@ -187,7 +190,7 @@ namespace gokiRegeas
                 yAspect = xAspect;
                 int width = (int)(GokiRegeas.currentFileBitmap.Width * xAspect);
                 int height = (int)(GokiRegeas.currentFileBitmap.Height * yAspect);
-                if (  GokiRegeas.resizedCurrentFileBitmap == null || GokiRegeas.resizedCurrentFileBitmap.Width != width || GokiRegeas.resizedCurrentFileBitmap.Height != height)
+                if ( GokiRegeas.resizedCurrentFileBitmap == null || GokiRegeas.resizedCurrentFileBitmap.Width != width || GokiRegeas.resizedCurrentFileBitmap.Height != height)
                 {
                     GokiRegeas.resizedCurrentFileBitmap = new Bitmap(GokiRegeas.currentFileBitmap, (int)width, (int)height);
                 }
@@ -223,6 +226,7 @@ namespace gokiRegeas
                 try
                 {
                     GokiRegeas.currentFileBitmap = (Bitmap)Image.FromFile(GokiRegeas.currentFilePath);
+                    GokiRegeas.resizedCurrentFileBitmap = null;
                     GokiRegeas.pathHistory.Add(GokiRegeas.currentFilePath);
                     GokiRegeas.pathHistoryIndex = GokiRegeas.pathHistory.Count - 1;
                     pnlDraw.Invalidate();
@@ -270,6 +274,7 @@ namespace gokiRegeas
             }
             pnlDraw.Invalidate();
             GokiRegeas.startTime = now;
+            onImageChange();
         }
 
         private void historyPrevious()
@@ -282,7 +287,6 @@ namespace gokiRegeas
             }
             if (GokiRegeas.pathHistoryIndex < GokiRegeas.pathHistory.Count)
             {
-
                 GokiRegeas.currentFilePath = GokiRegeas.pathHistory[GokiRegeas.pathHistoryIndex];
                 GokiRegeas.currentFileBitmap = (Bitmap)Image.FromFile(GokiRegeas.currentFilePath);
                 pnlDraw.Invalidate();
@@ -293,6 +297,12 @@ namespace gokiRegeas
             {
                 GokiRegeas.pauseTime = now;
             }
+            onImageChange();
+        }
+
+        private void onImageChange()
+        {
+            lblSpring1.Text = Path.GetFileName(GokiRegeas.currentFilePath);
         }
 
         private void btnToolStripNext_Click(object sender, EventArgs e)

@@ -14,12 +14,21 @@ namespace gokiRegeas
     public partial class frmMain : Form
     {
         internal static System.Windows.Forms.Timer timer;
+        internal static int clickX;
+        internal static int clickY;
+        internal static bool dragging;
         public frmMain()
         {
             InitializeComponent();
+            clickX = 0;
+            clickY = 0;
+            dragging = false;
             KeyDown += frmMain_KeyDown;
             pnlDraw.Paint += pnlDraw_Paint;
             pnlDraw.Resize += pnlDraw_Resize;
+            pnlDraw.MouseDown += pnlDraw_MouseDown;
+            pnlDraw.MouseUp += pnlDraw_MouseUp;
+            pnlDraw.MouseMove += pnlDraw_MouseMove;
             GokiRegeas.loadSettings();
             GokiRegeas.fillFilePool();
             FormClosed += frmMain_FormClosed;
@@ -40,6 +49,37 @@ namespace gokiRegeas
             updateToolStrip();
             updateStatusStrip();
             chooseRandomImage();
+        }
+
+        void pnlDraw_MouseUp(object sender, MouseEventArgs e)
+        {
+            dragging = false;
+        }
+
+        void pnlDraw_MouseMove(object sender, MouseEventArgs e)
+        {
+            if ( dragging && GokiLibrary.GokiUtility.IntervalPassed )
+            {
+                GokiRegeas.viewRotation = Math.Atan2(pnlDraw.Height/2 - e.Y, pnlDraw.Width/2 - e.X) * 180 / Math.PI - 90;
+                clickX = e.X;
+                clickY = e.Y;
+                pnlDraw.Invalidate();
+            }
+        }
+
+        void pnlDraw_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == System.Windows.Forms.MouseButtons.Left)
+            {
+                clickX = e.X;
+                clickY = e.Y;
+                dragging = true;
+            }
+            else if ( e.Button == System.Windows.Forms.MouseButtons.Right)
+            {
+                GokiRegeas.viewRotation = 0;
+                pnlDraw.Invalidate();
+            }
         }
 
         void frmMain_KeyDown(object sender, KeyEventArgs e)
@@ -158,7 +198,9 @@ namespace gokiRegeas
                 {
                     e.Graphics.ScaleTransform(1.0f, -1.0f);
                 }
+                e.Graphics.RotateTransform((float)GokiRegeas.viewRotation);
                 e.Graphics.TranslateTransform(-width / 2, -height / 2);
+
                 e.Graphics.DrawImage(GokiRegeas.currentFileBitmap, 0, 0, width, height);
             }
         }

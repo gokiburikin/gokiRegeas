@@ -31,6 +31,7 @@ namespace gokiRegeas
         internal static DateTime pauseTime;
         internal static bool horizontalFlip;
         internal static bool verticalFlip;
+        internal static double viewRotation;
 
         static GokiRegeas()
         {
@@ -51,6 +52,7 @@ namespace gokiRegeas
             paused = false;
             horizontalFlip = false;
             verticalFlip = false;
+            viewRotation = 0;
         }
 
         internal static void pause()

@@ -31,31 +31,31 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.pathsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
-            this.lblTimeStatus = new System.Windows.Forms.ToolStripStatusLabel();
-            this.lblSpring1 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-            this.btnToolStripContinuePause = new System.Windows.Forms.ToolStripButton();
-            this.btnToolStripPrevious = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.btnToolStripNext = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.btnToolStripLengths = new System.Windows.Forms.ToolStripSplitButton();
-            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            this.lblHistory = new System.Windows.Forms.ToolStripStatusLabel();
-            this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuViewHorizontalFlip = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuViewVerticalFlip = new System.Windows.Forms.ToolStripMenuItem();
-            this.pnlDraw = new gokiRegeas.DoubleBufferedPanel();
             this.nextToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.previousToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+            this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pathsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.backgroundColorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuViewHorizontalFlip = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuViewVerticalFlip = new System.Windows.Forms.ToolStripMenuItem();
+            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
+            this.lblHistory = new System.Windows.Forms.ToolStripStatusLabel();
+            this.lblSpring1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.lblTimeStatus = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.btnToolStripContinuePause = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.btnToolStripPrevious = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.btnToolStripNext = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.btnToolStripLengths = new System.Windows.Forms.ToolStripSplitButton();
+            this.pnlDraw = new gokiRegeas.DoubleBufferedPanel();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -86,10 +86,31 @@
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
+            // nextToolStripMenuItem
+            // 
+            this.nextToolStripMenuItem.Name = "nextToolStripMenuItem";
+            this.nextToolStripMenuItem.ShortcutKeyDisplayString = "E";
+            this.nextToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
+            this.nextToolStripMenuItem.Text = "Next";
+            this.nextToolStripMenuItem.Click += new System.EventHandler(this.nextToolStripMenuItem_Click);
+            // 
+            // previousToolStripMenuItem
+            // 
+            this.previousToolStripMenuItem.Name = "previousToolStripMenuItem";
+            this.previousToolStripMenuItem.ShortcutKeyDisplayString = "Q";
+            this.previousToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
+            this.previousToolStripMenuItem.Text = "Previous";
+            this.previousToolStripMenuItem.Click += new System.EventHandler(this.previousToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator4
+            // 
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(127, 6);
+            // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -102,18 +123,50 @@
             this.settingsToolStripMenuItem.Size = new System.Drawing.Size(58, 20);
             this.settingsToolStripMenuItem.Text = "Settings";
             // 
+            // pathsToolStripMenuItem
+            // 
+            this.pathsToolStripMenuItem.Name = "pathsToolStripMenuItem";
+            this.pathsToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.pathsToolStripMenuItem.Text = "Paths...";
+            this.pathsToolStripMenuItem.Click += new System.EventHandler(this.pathsToolStripMenuItem_Click);
+            // 
+            // backgroundColorToolStripMenuItem
+            // 
+            this.backgroundColorToolStripMenuItem.Name = "backgroundColorToolStripMenuItem";
+            this.backgroundColorToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.backgroundColorToolStripMenuItem.Text = "Background Color...";
+            this.backgroundColorToolStripMenuItem.Click += new System.EventHandler(this.backgroundColorToolStripMenuItem_Click);
+            // 
+            // viewToolStripMenuItem
+            // 
+            this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuViewHorizontalFlip,
+            this.mnuViewVerticalFlip});
+            this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
+            this.viewToolStripMenuItem.Size = new System.Drawing.Size(41, 20);
+            this.viewToolStripMenuItem.Text = "View";
+            // 
+            // mnuViewHorizontalFlip
+            // 
+            this.mnuViewHorizontalFlip.Name = "mnuViewHorizontalFlip";
+            this.mnuViewHorizontalFlip.ShortcutKeyDisplayString = "H";
+            this.mnuViewHorizontalFlip.Size = new System.Drawing.Size(155, 22);
+            this.mnuViewHorizontalFlip.Text = "Horizontal Flip";
+            this.mnuViewHorizontalFlip.Click += new System.EventHandler(this.mnuViewHorizontalFlip_Click);
+            // 
+            // mnuViewVerticalFlip
+            // 
+            this.mnuViewVerticalFlip.Name = "mnuViewVerticalFlip";
+            this.mnuViewVerticalFlip.ShortcutKeyDisplayString = "V";
+            this.mnuViewVerticalFlip.Size = new System.Drawing.Size(155, 22);
+            this.mnuViewVerticalFlip.Text = "Vertical Flip";
+            this.mnuViewVerticalFlip.Click += new System.EventHandler(this.mnuViewVerticalFlip_Click);
+            // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
             this.aboutToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
             this.aboutToolStripMenuItem.Text = "About";
-            // 
-            // pathsToolStripMenuItem
-            // 
-            this.pathsToolStripMenuItem.Name = "pathsToolStripMenuItem";
-            this.pathsToolStripMenuItem.Size = new System.Drawing.Size(113, 22);
-            this.pathsToolStripMenuItem.Text = "Paths...";
-            this.pathsToolStripMenuItem.Click += new System.EventHandler(this.pathsToolStripMenuItem_Click);
             // 
             // statusStrip1
             // 
@@ -139,6 +192,22 @@
             this.lblStatus.Text = "Status";
             this.lblStatus.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // lblHistory
+            // 
+            this.lblHistory.AutoSize = false;
+            this.lblHistory.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Right;
+            this.lblHistory.BorderStyle = System.Windows.Forms.Border3DStyle.Etched;
+            this.lblHistory.Name = "lblHistory";
+            this.lblHistory.Size = new System.Drawing.Size(100, 17);
+            this.lblHistory.Text = "History";
+            this.lblHistory.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lblSpring1
+            // 
+            this.lblSpring1.Name = "lblSpring1";
+            this.lblSpring1.Size = new System.Drawing.Size(317, 17);
+            this.lblSpring1.Spring = true;
+            // 
             // lblTimeStatus
             // 
             this.lblTimeStatus.AutoSize = false;
@@ -149,12 +218,6 @@
             this.lblTimeStatus.Size = new System.Drawing.Size(100, 17);
             this.lblTimeStatus.Text = "Time Status";
             this.lblTimeStatus.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // lblSpring1
-            // 
-            this.lblSpring1.Name = "lblSpring1";
-            this.lblSpring1.Size = new System.Drawing.Size(317, 17);
-            this.lblSpring1.Spring = true;
             // 
             // toolStrip1
             // 
@@ -184,6 +247,11 @@
             this.btnToolStripContinuePause.Size = new System.Drawing.Size(60, 22);
             this.btnToolStripContinuePause.Text = "Continue";
             // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+            // 
             // btnToolStripPrevious
             // 
             this.btnToolStripPrevious.AutoSize = false;
@@ -195,10 +263,10 @@
             this.btnToolStripPrevious.Text = "Previous";
             this.btnToolStripPrevious.Click += new System.EventHandler(this.btnToolStripPrevious_Click);
             // 
-            // toolStripSeparator1
+            // toolStripSeparator2
             // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
             // 
             // btnToolStripNext
             // 
@@ -211,10 +279,10 @@
             this.btnToolStripNext.Text = "Next";
             this.btnToolStripNext.Click += new System.EventHandler(this.btnToolStripNext_Click);
             // 
-            // toolStripSeparator2
+            // toolStripSeparator3
             // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
             // 
             // btnToolStripLengths
             // 
@@ -225,46 +293,7 @@
             this.btnToolStripLengths.Name = "btnToolStripLengths";
             this.btnToolStripLengths.Size = new System.Drawing.Size(100, 22);
             this.btnToolStripLengths.Text = "Length";
-            // 
-            // toolStripSeparator3
-            // 
-            this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
-            // 
-            // lblHistory
-            // 
-            this.lblHistory.AutoSize = false;
-            this.lblHistory.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Right;
-            this.lblHistory.BorderStyle = System.Windows.Forms.Border3DStyle.Etched;
-            this.lblHistory.Name = "lblHistory";
-            this.lblHistory.Size = new System.Drawing.Size(100, 17);
-            this.lblHistory.Text = "History";
-            this.lblHistory.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // viewToolStripMenuItem
-            // 
-            this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mnuViewHorizontalFlip,
-            this.mnuViewVerticalFlip});
-            this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
-            this.viewToolStripMenuItem.Size = new System.Drawing.Size(41, 20);
-            this.viewToolStripMenuItem.Text = "View";
-            // 
-            // mnuViewHorizontalFlip
-            // 
-            this.mnuViewHorizontalFlip.Name = "mnuViewHorizontalFlip";
-            this.mnuViewHorizontalFlip.ShortcutKeyDisplayString = "H";
-            this.mnuViewHorizontalFlip.Size = new System.Drawing.Size(155, 22);
-            this.mnuViewHorizontalFlip.Text = "Horizontal Flip";
-            this.mnuViewHorizontalFlip.Click += new System.EventHandler(this.mnuViewHorizontalFlip_Click);
-            // 
-            // mnuViewVerticalFlip
-            // 
-            this.mnuViewVerticalFlip.Name = "mnuViewVerticalFlip";
-            this.mnuViewVerticalFlip.ShortcutKeyDisplayString = "V";
-            this.mnuViewVerticalFlip.Size = new System.Drawing.Size(155, 22);
-            this.mnuViewVerticalFlip.Text = "Vertical Flip";
-            this.mnuViewVerticalFlip.Click += new System.EventHandler(this.mnuViewVerticalFlip_Click);
+            this.btnToolStripLengths.ButtonClick += new System.EventHandler(this.btnToolStripLengths_ButtonClick);
             // 
             // pnlDraw
             // 
@@ -273,34 +302,6 @@
             this.pnlDraw.Name = "pnlDraw";
             this.pnlDraw.Size = new System.Drawing.Size(632, 542);
             this.pnlDraw.TabIndex = 4;
-            // 
-            // nextToolStripMenuItem
-            // 
-            this.nextToolStripMenuItem.Name = "nextToolStripMenuItem";
-            this.nextToolStripMenuItem.ShortcutKeyDisplayString = "E";
-            this.nextToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.nextToolStripMenuItem.Text = "Next";
-            this.nextToolStripMenuItem.Click += new System.EventHandler(this.nextToolStripMenuItem_Click);
-            // 
-            // previousToolStripMenuItem
-            // 
-            this.previousToolStripMenuItem.Name = "previousToolStripMenuItem";
-            this.previousToolStripMenuItem.ShortcutKeyDisplayString = "Q";
-            this.previousToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.previousToolStripMenuItem.Text = "Previous";
-            this.previousToolStripMenuItem.Click += new System.EventHandler(this.previousToolStripMenuItem_Click);
-            // 
-            // toolStripSeparator4
-            // 
-            this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(149, 6);
-            // 
-            // backgroundColorToolStripMenuItem
-            // 
-            this.backgroundColorToolStripMenuItem.Name = "backgroundColorToolStripMenuItem";
-            this.backgroundColorToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
-            this.backgroundColorToolStripMenuItem.Text = "Background Color...";
-            this.backgroundColorToolStripMenuItem.Click += new System.EventHandler(this.backgroundColorToolStripMenuItem_Click);
             // 
             // frmMain
             // 

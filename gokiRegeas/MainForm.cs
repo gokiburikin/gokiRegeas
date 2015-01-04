@@ -35,6 +35,7 @@ namespace gokiRegeas
                 lengthButton.Tag = length;
                 lengthButton.Click += lengthButton_Click;
                 btnToolStripLengths.DropDownItems.Add(lengthButton);
+
             }
             updateToolStrip();
             updateStatusStrip();
@@ -103,6 +104,7 @@ namespace gokiRegeas
         void lengthButton_Click(object sender, EventArgs e)
         {
             GokiRegeas.length = (int)((ToolStripButton)sender).Tag;
+            GokiRegeas.startTime = DateTime.Now;
             updateToolStrip();
         }
 
@@ -179,7 +181,7 @@ namespace gokiRegeas
                     GokiRegeas.pathHistoryIndex = GokiRegeas.pathHistory.Count - 1;
                     pnlDraw.Invalidate();
                     updateStatusStrip();
-                    GokiRegeas.unpause();
+                    //GokiRegeas.unpause();
                     lblStatus.Text = "";
                 }
                 catch (Exception ex)
@@ -200,6 +202,7 @@ namespace gokiRegeas
 
         private void historyNext()
         {
+            DateTime now = DateTime.Now;
             GokiRegeas.pathHistoryIndex++;
             if (GokiRegeas.pathHistoryIndex > GokiRegeas.pathHistory.Count)
             {
@@ -215,12 +218,17 @@ namespace gokiRegeas
             {
                 chooseRandomImage();
             }
+            if ( GokiRegeas.paused)
+            {
+                GokiRegeas.pauseTime = now;
+            }
             pnlDraw.Invalidate();
-            GokiRegeas.startTime = DateTime.Now;
+            GokiRegeas.startTime = now;
         }
 
         private void historyPrevious()
         {
+            DateTime now = DateTime.Now;
             GokiRegeas.pathHistoryIndex--;
             if (GokiRegeas.pathHistoryIndex < 0)
             {
@@ -232,8 +240,12 @@ namespace gokiRegeas
                 GokiRegeas.currentFilePath = GokiRegeas.pathHistory[GokiRegeas.pathHistoryIndex];
                 GokiRegeas.currentFileBitmap = (Bitmap)Image.FromFile(GokiRegeas.currentFilePath);
                 pnlDraw.Invalidate();
-                GokiRegeas.startTime = DateTime.Now;
+                GokiRegeas.startTime = now;
                 updateStatusStrip();
+            }
+            if (GokiRegeas.paused)
+            {
+                GokiRegeas.pauseTime = now;
             }
         }
 
@@ -280,10 +292,23 @@ namespace gokiRegeas
         private void backgroundColorToolStripMenuItem_Click(object sender, EventArgs e)
         {
             frmColorSelection colorSelectionForm = new frmColorSelection();
+            colorSelectionForm.setColor(GokiRegeas.backColor);
             if (colorSelectionForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 GokiRegeas.backColor = Color.FromArgb(colorSelectionForm.Red, colorSelectionForm.Green, colorSelectionForm.Blue);
                 pnlDraw.BackColor = GokiRegeas.backColor;
+            }
+        }
+
+        private void btnToolStripLengths_ButtonClick(object sender, EventArgs e)
+        {
+            frmCustomLength customLengthForm = new frmCustomLength();
+            customLengthForm.numSeconds.Value = (decimal)GokiRegeas.length/1000;
+            if ( customLengthForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                GokiRegeas.length = (int)customLengthForm.numSeconds.Value * 1000;
+                updateToolStrip();
+                GokiRegeas.startTime = DateTime.Now;
             }
         }
     }

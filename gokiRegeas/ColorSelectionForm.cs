@@ -40,6 +40,27 @@ namespace gokiRegeas
             InitializeComponent();
             btnOk.Click += btnOk_Click;
             btnCancel.Click += btnCancel_Click;
+            numRed.ValueChanged += colorChanged;
+            numGreen.ValueChanged += colorChanged;
+            numBlue.ValueChanged += colorChanged;
+        }
+
+        void colorChanged(object sender, EventArgs e)
+        {
+            updatePanel();
+        }
+
+        public void setColor ( Color color)
+        {
+            numRed.Value= color.R;
+            numGreen.Value = color.G;
+            numBlue.Value = color.B;
+        }
+
+        public void updatePanel()
+        {
+            pnlColor.BackColor = Color.FromArgb((int)numRed.Value, (int)numGreen.Value, (int)numBlue.Value);
+            pnlColor.Invalidate();
         }
 
         void btnCancel_Click(object sender, EventArgs e)

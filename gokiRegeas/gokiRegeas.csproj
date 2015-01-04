@@ -51,6 +51,12 @@
     <Compile Include="ColorSelectionForm.Designer.cs">
       <DependentUpon>ColorSelectionForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="CustomLengthForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustomLengthForm.Designer.cs">
+      <DependentUpon>CustomLengthForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="DoubleBufferedPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -78,6 +84,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="ColorSelectionForm.resx">
       <DependentUpon>ColorSelectionForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomLengthForm.resx">
+      <DependentUpon>CustomLengthForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="DoubleBufferedPanel.resx">
       <DependentUpon>DoubleBufferedPanel.cs</DependentUpon>

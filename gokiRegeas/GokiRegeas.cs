@@ -90,6 +90,7 @@ namespace gokiRegeas
             {
                 writer.write(path);
             }
+            writer.write(backColor);
             File.WriteAllBytes(settingsPath, writer.Data);
         }
 
@@ -119,6 +120,7 @@ namespace gokiRegeas
                         sessionPaths.Add(path);
                     }
                 }
+                backColor = reader.readColor();
             }
             catch (Exception ex)
             {

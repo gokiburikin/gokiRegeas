@@ -17,12 +17,16 @@ namespace gokiRegeas
         internal static int clickX;
         internal static int clickY;
         internal static bool dragging;
+        internal static int dragThreshold;
+        internal static bool dirty;
         public frmMain()
         {
             InitializeComponent();
             clickX = 0;
             clickY = 0;
             dragging = false;
+            dragThreshold = 6;
+            dirty = false;
             KeyDown += frmMain_KeyDown;
             pnlDraw.Paint += pnlDraw_Paint;
             pnlDraw.Resize += pnlDraw_Resize;
@@ -60,12 +64,13 @@ namespace gokiRegeas
 
         void pnlDraw_MouseMove(object sender, MouseEventArgs e)
         {
-            if ( dragging && GokiLibrary.GokiUtility.IntervalPassed )
+            if ( Math.Sqrt(Math.Pow(e.X - clickX,2) + Math.Pow(e.Y - clickY,2) )> dragThreshold)
             {
-                GokiRegeas.viewRotation = Math.Atan2(pnlDraw.Height/2 - e.Y, pnlDraw.Width/2 - e.X) * 180 / Math.PI - 90;
-                clickX = e.X;
-                clickY = e.Y;
-                pnlDraw.Invalidate();
+                if ( dragging )
+                {
+                    GokiRegeas.viewRotation = Math.Atan2(pnlDraw.Height/2 - e.Y, pnlDraw.Width/2 - e.X) * 180 / Math.PI - 90;
+                    dirty = true;
+                }
             }
         }
 
@@ -80,7 +85,7 @@ namespace gokiRegeas
             else if ( e.Button == System.Windows.Forms.MouseButtons.Right)
             {
                 GokiRegeas.viewRotation = 0;
-                pnlDraw.Invalidate();
+                dirty = true;
             }
         }
 
@@ -105,6 +110,11 @@ namespace gokiRegeas
             if (e.KeyCode == Keys.Q)
             {
                 historyPrevious();
+            }
+            if (e.KeyCode == Keys.R)
+            {
+                GokiRegeas.viewRotation = 0;
+                dirty = true;
             }
             if (e.KeyCode == Keys.Space)
             {
@@ -157,13 +167,19 @@ namespace gokiRegeas
             {
                 timePaused = (DateTime.Now - GokiRegeas.pauseTime).TotalMilliseconds;
             }
-            TimeSpan timeRemaining = (GokiRegeas.startTime.AddMilliseconds(GokiRegeas.length + timePaused) - DateTime.Now);
-            lblTimeStatus.Text = timeRemaining.ToString(@"mm\:ss\.ff");
+            GokiRegeas.timeRemaining = (GokiRegeas.startTime.AddMilliseconds(GokiRegeas.length + timePaused) - DateTime.Now);
+            lblTimeStatus.Text = GokiRegeas.timeRemaining.ToString(@"mm\:ss\.ff");
+            GokiRegeas.percentage = ((DateTime.Now - GokiRegeas.startTime).TotalMilliseconds - timePaused) / GokiRegeas.length;
             if ((DateTime.Now - GokiRegeas.startTime).TotalMilliseconds - timePaused > GokiRegeas.length)
             {
                 chooseRandomImage();
                 onImageChange();
                 GokiRegeas.startTime = DateTime.Now;
+            }
+
+            if ( dirty || GokiRegeas.showBigTimer)
+            {
+                pnlDraw.Invalidate();
             }
         }
 
@@ -209,6 +225,32 @@ namespace gokiRegeas
                 e.Graphics.TranslateTransform(-width / 2, -height / 2);
 
                 e.Graphics.DrawImage(GokiRegeas.resizedCurrentFileBitmap,0,0);
+                e.Graphics.ResetTransform();
+                if( GokiRegeas.showBigTimer && !GokiRegeas.paused )
+                {
+                    Color light = Color.FromArgb(32, 255, 255, 255);
+                    Color dark = Color.FromArgb(32, 0, 0, 0);
+                    using (SolidBrush brush = new SolidBrush(dark))
+                    {
+                        if (GokiRegeas.timeRemaining.Minutes < 1)
+                        {
+                            string text = GokiRegeas.timeRemaining.ToString(@"ss");
+                            if (GokiRegeas.timeRemaining.TotalSeconds < 10)
+                            {
+                                text = GokiRegeas.timeRemaining.ToString(@"ss\.ff");
+                            }
+                            Font font = new Font("Arial", 48);
+                            StringFormat format = new StringFormat();
+                            format.Alignment = StringAlignment.Center;
+                            format.LineAlignment = StringAlignment.Near;
+                            e.Graphics.DrawString(text, font, brush, pnlDraw.ClientRectangle, format);
+                            brush.Color = light;
+                            format.LineAlignment = StringAlignment.Far;
+                            e.Graphics.DrawString(text, font, brush, pnlDraw.ClientRectangle, format);
+                        }
+                    }
+                    
+                }
             }
         }
 
@@ -333,6 +375,7 @@ namespace gokiRegeas
         {
             mnuViewHorizontalFlip.Checked = GokiRegeas.horizontalFlip;
             mnuViewVerticalFlip.Checked = GokiRegeas.verticalFlip;
+            mnuViewBigTimer.Checked = GokiRegeas.showBigTimer;
         }
 
         private void nextToolStripMenuItem_Click(object sender, EventArgs e)
@@ -367,5 +410,19 @@ namespace gokiRegeas
                 GokiRegeas.startTime = DateTime.Now;
             }
         }
+
+        private void btnToolStripRestart_Click(object sender, EventArgs e)
+        {
+            GokiRegeas.startTime = DateTime.Now;
+        }
+
+        private void btnViewTimerBar_Click(object sender, EventArgs e)
+        {
+            GokiRegeas.showBigTimer = !GokiRegeas.showBigTimer;
+            updateMenuStrip();
+            dirty = true;
+        }
+
+
     }
 }

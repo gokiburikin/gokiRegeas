@@ -33,6 +33,9 @@ namespace gokiRegeas
         internal static bool horizontalFlip;
         internal static bool verticalFlip;
         internal static double viewRotation;
+        internal static bool showBigTimer;
+        internal static double percentage;
+        internal static TimeSpan timeRemaining;
 
         static GokiRegeas()
         {
@@ -54,6 +57,9 @@ namespace gokiRegeas
             horizontalFlip = false;
             verticalFlip = false;
             viewRotation = 0;
+            showBigTimer = false;
+            percentage = 0;
+            timeRemaining = TimeSpan.MinValue;
         }
 
         internal static void pause()
@@ -94,6 +100,7 @@ namespace gokiRegeas
                 writer.write(path);
             }
             writer.write(backColor);
+            writer.write(showBigTimer);
             File.WriteAllBytes(settingsPath, writer.Data);
         }
 
@@ -124,6 +131,7 @@ namespace gokiRegeas
                     }
                 }
                 backColor = reader.readColor();
+                showBigTimer = reader.readBoolean();
             }
             catch (Exception ex)
             {

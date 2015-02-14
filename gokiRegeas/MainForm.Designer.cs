@@ -41,6 +41,7 @@
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuViewHorizontalFlip = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuViewVerticalFlip = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuViewBigTimer = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
@@ -48,6 +49,8 @@
             this.lblSpring1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.lblTimeStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.btnToolStripReset = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.btnToolStripContinuePause = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.btnToolStripPrevious = new System.Windows.Forms.ToolStripButton();
@@ -141,7 +144,8 @@
             // 
             this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuViewHorizontalFlip,
-            this.mnuViewVerticalFlip});
+            this.mnuViewVerticalFlip,
+            this.mnuViewBigTimer});
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
             this.viewToolStripMenuItem.Size = new System.Drawing.Size(41, 20);
             this.viewToolStripMenuItem.Text = "View";
@@ -161,6 +165,13 @@
             this.mnuViewVerticalFlip.Size = new System.Drawing.Size(155, 22);
             this.mnuViewVerticalFlip.Text = "Vertical Flip";
             this.mnuViewVerticalFlip.Click += new System.EventHandler(this.mnuViewVerticalFlip_Click);
+            // 
+            // mnuViewBigTimer
+            // 
+            this.mnuViewBigTimer.Name = "mnuViewBigTimer";
+            this.mnuViewBigTimer.Size = new System.Drawing.Size(155, 22);
+            this.mnuViewBigTimer.Text = "Big Timer";
+            this.mnuViewBigTimer.Click += new System.EventHandler(this.btnViewTimerBar_Click);
             // 
             // aboutToolStripMenuItem
             // 
@@ -207,6 +218,7 @@
             this.lblSpring1.Name = "lblSpring1";
             this.lblSpring1.Size = new System.Drawing.Size(317, 17);
             this.lblSpring1.Spring = true;
+            this.lblSpring1.Text = "Filename";
             // 
             // lblTimeStatus
             // 
@@ -223,6 +235,8 @@
             // 
             this.toolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.btnToolStripReset,
+            this.toolStripSeparator5,
             this.btnToolStripContinuePause,
             this.toolStripSeparator1,
             this.btnToolStripPrevious,
@@ -236,6 +250,22 @@
             this.toolStrip1.Size = new System.Drawing.Size(632, 25);
             this.toolStrip1.TabIndex = 3;
             this.toolStrip1.Text = "toolStrip1";
+            // 
+            // btnToolStripReset
+            // 
+            this.btnToolStripReset.AutoSize = false;
+            this.btnToolStripReset.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.btnToolStripReset.Image = ((System.Drawing.Image)(resources.GetObject("btnToolStripReset.Image")));
+            this.btnToolStripReset.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnToolStripReset.Name = "btnToolStripReset";
+            this.btnToolStripReset.Size = new System.Drawing.Size(60, 22);
+            this.btnToolStripReset.Text = "Reset";
+            this.btnToolStripReset.Click += new System.EventHandler(this.btnToolStripRestart_Click);
+            // 
+            // toolStripSeparator5
+            // 
+            this.toolStripSeparator5.Name = "toolStripSeparator5";
+            this.toolStripSeparator5.Size = new System.Drawing.Size(6, 25);
             // 
             // btnToolStripContinuePause
             // 
@@ -354,11 +384,14 @@
         private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem mnuViewHorizontalFlip;
         private System.Windows.Forms.ToolStripMenuItem mnuViewVerticalFlip;
-        private DoubleBufferedPanel pnlDraw;
         private System.Windows.Forms.ToolStripMenuItem nextToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem previousToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.ToolStripMenuItem backgroundColorToolStripMenuItem;
+        private DoubleBufferedPanel pnlDraw;
+        private System.Windows.Forms.ToolStripButton btnToolStripReset;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
+        private System.Windows.Forms.ToolStripMenuItem mnuViewBigTimer;
     }
 }
 

@@ -1,6 +1,7 @@
 ﻿using GokiLibrary;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -16,8 +17,13 @@ namespace gokiRegeas
         internal static readonly int[] lengths = new int[] { 10000, 25000, 30000, 45000, 60000, 75000, 90000 };
 
         internal static double length;
+        internal static TimeSpan runningTime;
         internal static Random random;
         internal static DateTime startTime;
+        internal static DateTime lastTime;
+        internal static DateTime pauseTime;
+        internal static TimeSpan timeRemaining;
+        internal static bool paused;
         internal static List<string> paths;
         internal static List<string> sessionPaths;
         internal static List<string> filePool;
@@ -28,21 +34,26 @@ namespace gokiRegeas
         internal static List<string> pathHistory;
         internal static int pathHistoryIndex;
         internal static Color backColor;
-        internal static bool paused;
-        internal static DateTime pauseTime;
         internal static bool horizontalFlip;
         internal static bool verticalFlip;
         internal static double viewRotation;
         internal static bool showBigTimer;
+        internal static bool alwaysShowTimer;
         internal static double percentage;
-        internal static TimeSpan timeRemaining;
+        internal static double lastUsedTime;
+        internal static Boolean alwaysOnTop;
+        internal static int timerOpacity;
+        internal static Process process;
 
         static GokiRegeas()
         {
+            process = Process.GetCurrentProcess();
             random = new Random();
             startTime = DateTime.Now;
             pauseTime = DateTime.Now;
             length = lengths[2];
+            runningTime = new TimeSpan();
+            timeRemaining = new TimeSpan();
             paths = new List<string>();
             sessionPaths = new List<string>();
             paths.Add(@".\img\");
@@ -58,8 +69,11 @@ namespace gokiRegeas
             verticalFlip = false;
             viewRotation = 0;
             showBigTimer = false;
+            alwaysShowTimer = true;
             percentage = 0;
-            timeRemaining = TimeSpan.MinValue;
+            lastUsedTime = 30000;
+            alwaysOnTop = false;
+            timerOpacity = 10;
         }
 
         internal static void pause()
@@ -101,6 +115,10 @@ namespace gokiRegeas
             }
             writer.write(backColor);
             writer.write(showBigTimer);
+            writer.write(alwaysShowTimer);
+            writer.write(lastUsedTime);
+            writer.write(alwaysOnTop);
+            writer.write(timerOpacity);
             File.WriteAllBytes(settingsPath, writer.Data);
         }
 
@@ -132,6 +150,39 @@ namespace gokiRegeas
                 }
                 backColor = reader.readColor();
                 showBigTimer = reader.readBoolean();
+                try
+                {
+                    alwaysShowTimer = reader.readBoolean();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Could not load always show timer value.");
+                }
+                try
+                {
+                    lastUsedTime = reader.readDouble();
+                    length = lastUsedTime;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Could not load last used time.");
+                }
+                try
+                {
+                    alwaysOnTop = reader.readBoolean();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Could not load last used time.");
+                }
+                try
+                {
+                    timerOpacity= reader.readInt();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Could not load timer opacity.");
+                }
             }
             catch (Exception ex)
             {

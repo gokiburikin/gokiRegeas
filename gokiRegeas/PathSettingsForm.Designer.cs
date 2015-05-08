@@ -40,6 +40,7 @@
             // 
             // btnClose
             // 
+            this.btnClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnClose.Location = new System.Drawing.Point(325, 298);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(137, 23);
@@ -115,8 +116,10 @@
             // 
             // frmPathSettings
             // 
+            this.AcceptButton = this.btnClose;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.btnClose;
             this.ClientSize = new System.Drawing.Size(474, 333);
             this.Controls.Add(this.lstPaths);
             this.Controls.Add(this.btnTogglePath);

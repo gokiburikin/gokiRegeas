@@ -119,6 +119,19 @@ namespace GokiLibrary
             return output;
         }
 
+        public double readDouble()
+        {
+            double output = 0;
+            byte[] bytes = new byte[sizeof(double)];
+            read(bytes);
+            if (BitConverter.IsLittleEndian)
+            {
+                Array.Reverse(bytes);
+            }
+            output = BitConverter.ToDouble(bytes, 0);
+            return output;
+        }
+
         public bool readBoolean()
         {
             bool output = false;

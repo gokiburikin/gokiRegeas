@@ -62,6 +62,16 @@ namespace GokiLibrary
             add(bytes);
         }
 
+        public void writeDouble(double value)
+        {
+            byte[] bytes = BitConverter.GetBytes(value);
+            if (BitConverter.IsLittleEndian)
+            {
+                Array.Reverse(bytes);
+            }
+            add(bytes);
+        }
+
         public void writeBoolean(bool value)
         {
             add(Convert.ToByte(value));
@@ -103,6 +113,11 @@ namespace GokiLibrary
         public void write(float value)
         {
             writeFloat(value);
+        }
+
+        public void write(double value)
+        {
+            writeDouble(value);
         }
 
         public void write(Color color)

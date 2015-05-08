@@ -67,6 +67,28 @@ namespace gokiRegeas
         private void btnClose_Click(object sender, EventArgs e)
         {
             this.Close();
+            GokiRegeas.saveSettings();
+        }
+
+        public void refreshList()
+        {
+            lstPaths.SuspendLayout();
+            foreach (string path in GokiRegeas.paths)
+            {
+                ListViewItem item = lstPaths.FindItemWithText(path);
+                   if (  item != null )
+                   {
+                    if (GokiRegeas.sessionPaths.Contains(path))
+                    {
+                        item.ForeColor = Color.Black;
+                    }
+                    else
+                    {
+                        item.ForeColor = Color.DarkGray;
+                    }
+                }
+            }
+            lstPaths.ResumeLayout();
         }
 
         public void updateList()
@@ -128,7 +150,8 @@ namespace gokiRegeas
                 {
                     GokiRegeas.sessionPaths.Add(path);
                 }
-                updateList();
+                ///updateList();
+                refreshList();
                 GokiRegeas.fillFilePool();
             }
         }

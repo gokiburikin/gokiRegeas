@@ -42,6 +42,7 @@
             this.mnuViewHorizontalFlip = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuViewVerticalFlip = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuViewBigTimer = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuViewAlwaysShowTimer = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
@@ -59,6 +60,9 @@
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.btnToolStripLengths = new System.Windows.Forms.ToolStripSplitButton();
             this.pnlDraw = new gokiRegeas.DoubleBufferedPanel();
+            this.mnuViewAlwaysOnTop = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
+            this.btnToolStripTimerOpacity = new System.Windows.Forms.ToolStripDropDownButton();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -145,7 +149,9 @@
             this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuViewHorizontalFlip,
             this.mnuViewVerticalFlip,
-            this.mnuViewBigTimer});
+            this.mnuViewBigTimer,
+            this.mnuViewAlwaysShowTimer,
+            this.mnuViewAlwaysOnTop});
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
             this.viewToolStripMenuItem.Size = new System.Drawing.Size(41, 20);
             this.viewToolStripMenuItem.Text = "View";
@@ -154,7 +160,7 @@
             // 
             this.mnuViewHorizontalFlip.Name = "mnuViewHorizontalFlip";
             this.mnuViewHorizontalFlip.ShortcutKeyDisplayString = "H";
-            this.mnuViewHorizontalFlip.Size = new System.Drawing.Size(155, 22);
+            this.mnuViewHorizontalFlip.Size = new System.Drawing.Size(166, 22);
             this.mnuViewHorizontalFlip.Text = "Horizontal Flip";
             this.mnuViewHorizontalFlip.Click += new System.EventHandler(this.mnuViewHorizontalFlip_Click);
             // 
@@ -162,16 +168,23 @@
             // 
             this.mnuViewVerticalFlip.Name = "mnuViewVerticalFlip";
             this.mnuViewVerticalFlip.ShortcutKeyDisplayString = "V";
-            this.mnuViewVerticalFlip.Size = new System.Drawing.Size(155, 22);
+            this.mnuViewVerticalFlip.Size = new System.Drawing.Size(166, 22);
             this.mnuViewVerticalFlip.Text = "Vertical Flip";
             this.mnuViewVerticalFlip.Click += new System.EventHandler(this.mnuViewVerticalFlip_Click);
             // 
             // mnuViewBigTimer
             // 
             this.mnuViewBigTimer.Name = "mnuViewBigTimer";
-            this.mnuViewBigTimer.Size = new System.Drawing.Size(155, 22);
+            this.mnuViewBigTimer.Size = new System.Drawing.Size(166, 22);
             this.mnuViewBigTimer.Text = "Big Timer";
             this.mnuViewBigTimer.Click += new System.EventHandler(this.btnViewTimerBar_Click);
+            // 
+            // mnuViewAlwaysShowTimer
+            // 
+            this.mnuViewAlwaysShowTimer.Name = "mnuViewAlwaysShowTimer";
+            this.mnuViewAlwaysShowTimer.Size = new System.Drawing.Size(166, 22);
+            this.mnuViewAlwaysShowTimer.Text = "Always Show Timer";
+            this.mnuViewAlwaysShowTimer.Click += new System.EventHandler(this.mnuViewAlwaysShowTimer_Click);
             // 
             // aboutToolStripMenuItem
             // 
@@ -243,7 +256,9 @@
             this.toolStripSeparator2,
             this.btnToolStripNext,
             this.toolStripSeparator3,
-            this.btnToolStripLengths});
+            this.btnToolStripLengths,
+            this.toolStripSeparator6,
+            this.btnToolStripTimerOpacity});
             this.toolStrip1.Location = new System.Drawing.Point(0, 24);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
@@ -333,6 +348,27 @@
             this.pnlDraw.Size = new System.Drawing.Size(632, 542);
             this.pnlDraw.TabIndex = 4;
             // 
+            // mnuViewAlwaysOnTop
+            // 
+            this.mnuViewAlwaysOnTop.Name = "mnuViewAlwaysOnTop";
+            this.mnuViewAlwaysOnTop.Size = new System.Drawing.Size(166, 22);
+            this.mnuViewAlwaysOnTop.Text = "Always On Top";
+            this.mnuViewAlwaysOnTop.Click += new System.EventHandler(this.mnuViewAlwaysOnTop_Click);
+            // 
+            // toolStripSeparator6
+            // 
+            this.toolStripSeparator6.Name = "toolStripSeparator6";
+            this.toolStripSeparator6.Size = new System.Drawing.Size(6, 25);
+            // 
+            // btnToolStripTimerOpacity
+            // 
+            this.btnToolStripTimerOpacity.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.btnToolStripTimerOpacity.Image = ((System.Drawing.Image)(resources.GetObject("btnToolStripTimerOpacity.Image")));
+            this.btnToolStripTimerOpacity.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnToolStripTimerOpacity.Name = "btnToolStripTimerOpacity";
+            this.btnToolStripTimerOpacity.Size = new System.Drawing.Size(86, 22);
+            this.btnToolStripTimerOpacity.Text = "Timer Opacity";
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -392,6 +428,10 @@
         private System.Windows.Forms.ToolStripButton btnToolStripReset;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
         private System.Windows.Forms.ToolStripMenuItem mnuViewBigTimer;
+        private System.Windows.Forms.ToolStripMenuItem mnuViewAlwaysShowTimer;
+        private System.Windows.Forms.ToolStripMenuItem mnuViewAlwaysOnTop;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
+        private System.Windows.Forms.ToolStripDropDownButton btnToolStripTimerOpacity;
     }
 }
 

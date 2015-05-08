@@ -14,13 +14,17 @@ namespace gokiRegeas
     public partial class frmMain : Form
     {
         internal static System.Windows.Forms.Timer timer;
+        internal static System.Windows.Forms.Timer memoryTimer;
         internal static int clickX;
         internal static int clickY;
         internal static bool dragging;
         internal static int dragThreshold;
         internal static bool dirty;
+        internal static int[] timerOpacities = new int[] { 0, 31, 63, 127, 191, 255 };
         public frmMain()
         {
+            GokiRegeas.lastTime = DateTime.Now;
+            GokiRegeas.pause();
             InitializeComponent();
             clickX = 0;
             clickY = 0;
@@ -36,6 +40,10 @@ namespace gokiRegeas
             GokiRegeas.loadSettings();
             GokiRegeas.fillFilePool();
             FormClosed += frmMain_FormClosed;
+            memoryTimer = new Timer();
+            memoryTimer.Tick += memoryTimer_Tick;
+            memoryTimer.Interval = 1000;
+            memoryTimer.Start();
             timer = new Timer();
             timer.Tick += timer_Tick;
             timer.Interval = 35;
@@ -48,13 +56,30 @@ namespace gokiRegeas
                 lengthButton.Tag = length;
                 lengthButton.Click += lengthButton_Click;
                 btnToolStripLengths.DropDownItems.Add(lengthButton);
-
+            }
+            foreach (int opacity in timerOpacities)
+            {
+                ToolStripButton opacityButton = new ToolStripButton(String.Format("{0:N0}", opacity));
+                opacityButton.Tag = opacity;
+                opacityButton.Click += opacityButton_Click;
+                btnToolStripTimerOpacity.DropDownItems.Add(opacityButton);
             }
             updateToolStrip();
             updateStatusStrip();
-            chooseRandomImage();
-            onImageChange();
+            updateMenuStrip();
+            this.TopMost = GokiRegeas.alwaysOnTop;
+        }
 
+        void memoryTimer_Tick(object sender, EventArgs e)
+        {
+            GokiRegeas.process.Refresh();
+            Text = String.Format("gokiRegeas - {0:N0}KB", GokiRegeas.process.PrivateMemorySize64 / 1024);
+        }
+
+        void opacityButton_Click(object sender, EventArgs e)
+        {
+            GokiRegeas.timerOpacity = (int)((ToolStripButton)sender).Tag;
+            updateToolStrip();
         }
 
         void pnlDraw_MouseUp(object sender, MouseEventArgs e)
@@ -156,7 +181,8 @@ namespace gokiRegeas
         void lengthButton_Click(object sender, EventArgs e)
         {
             GokiRegeas.length = (int)((ToolStripButton)sender).Tag;
-            GokiRegeas.startTime = DateTime.Now;
+            GokiRegeas.lastUsedTime = GokiRegeas.length;
+            GokiRegeas.runningTime = TimeSpan.FromMilliseconds(0);
             updateToolStrip();
         }
 
@@ -167,10 +193,15 @@ namespace gokiRegeas
             {
                 timePaused = (DateTime.Now - GokiRegeas.pauseTime).TotalMilliseconds;
             }
-            GokiRegeas.timeRemaining = (GokiRegeas.startTime.AddMilliseconds(GokiRegeas.length + timePaused) - DateTime.Now);
+            else
+            {
+                GokiRegeas.runningTime += DateTime.Now - GokiRegeas.lastTime;
+            }
+            GokiRegeas.lastTime = DateTime.Now;
+            GokiRegeas.timeRemaining = TimeSpan.FromMilliseconds(GokiRegeas.length - GokiRegeas.runningTime.TotalMilliseconds);
             lblTimeStatus.Text = GokiRegeas.timeRemaining.ToString(@"mm\:ss\.ff");
             GokiRegeas.percentage = ((DateTime.Now - GokiRegeas.startTime).TotalMilliseconds - timePaused) / GokiRegeas.length;
-            if ((DateTime.Now - GokiRegeas.startTime).TotalMilliseconds - timePaused > GokiRegeas.length)
+            if (GokiRegeas.runningTime.TotalMilliseconds > GokiRegeas.length)
             {
                 chooseRandomImage();
                 onImageChange();
@@ -208,6 +239,11 @@ namespace gokiRegeas
                 int height = (int)(GokiRegeas.currentFileBitmap.Height * yAspect);
                 if ( GokiRegeas.resizedCurrentFileBitmap == null || GokiRegeas.resizedCurrentFileBitmap.Width != width || GokiRegeas.resizedCurrentFileBitmap.Height != height)
                 {
+                    if ( GokiRegeas.resizedCurrentFileBitmap != null )
+                    {
+                        GokiRegeas.resizedCurrentFileBitmap.Dispose();
+                        GokiRegeas.resizedCurrentFileBitmap = null;
+                    }
                     GokiRegeas.resizedCurrentFileBitmap = new Bitmap(GokiRegeas.currentFileBitmap, (int)width, (int)height);
                 }
                 float xOffset = (pnlDraw.Width - width) / 2;
@@ -228,13 +264,15 @@ namespace gokiRegeas
                 e.Graphics.ResetTransform();
                 if( GokiRegeas.showBigTimer && !GokiRegeas.paused )
                 {
-                    Color light = Color.FromArgb(32, 255, 255, 255);
-                    Color dark = Color.FromArgb(32, 0, 0, 0);
+                    Color light = Color.FromArgb(GokiRegeas.timerOpacity-1, 255, 255, 255);
+                    Color dark = Color.FromArgb(GokiRegeas.timerOpacity - 1, 0, 0, 0);
                     using (SolidBrush brush = new SolidBrush(dark))
                     {
-                        if (GokiRegeas.timeRemaining.Minutes < 1)
+                        if ( GokiRegeas.timeRemaining.Minutes < 1 || GokiRegeas.alwaysShowTimer )
                         {
-                            string text = GokiRegeas.timeRemaining.ToString(@"ss");
+                            string text = Math.Ceiling(GokiRegeas.timeRemaining.TotalSeconds).ToString();
+//                            string text = GokiRegeas.timeRemaining.ToString(@"ss");
+
                             if (GokiRegeas.timeRemaining.TotalSeconds < 10)
                             {
                                 text = GokiRegeas.timeRemaining.ToString(@"ss\.ff");
@@ -267,6 +305,10 @@ namespace gokiRegeas
                 GokiRegeas.currentFilePath = GokiRegeas.filePool[GokiRegeas.random.Next(GokiRegeas.filePool.Count)];
                 try
                 {
+                    if (GokiRegeas.currentFileBitmap != null)
+                    {
+                        GokiRegeas.currentFileBitmap.Dispose();
+                    }
                     GokiRegeas.currentFileBitmap = (Bitmap)Image.FromFile(GokiRegeas.currentFilePath);
                     GokiRegeas.resizedCurrentFileBitmap = null;
                     GokiRegeas.pathHistory.Add(GokiRegeas.currentFilePath);
@@ -303,6 +345,12 @@ namespace gokiRegeas
             if (GokiRegeas.pathHistoryIndex <= GokiRegeas.pathHistory.Count - 1)
             {
                 GokiRegeas.currentFilePath = GokiRegeas.pathHistory[GokiRegeas.pathHistoryIndex];
+                if (GokiRegeas.currentFileBitmap != null)
+                {
+                    GokiRegeas.currentFileBitmap.Dispose();
+                    GokiRegeas.resizedCurrentFileBitmap.Dispose();
+                    GokiRegeas.resizedCurrentFileBitmap = null;
+                }
                 GokiRegeas.currentFileBitmap = (Bitmap)Image.FromFile(GokiRegeas.currentFilePath);
                 updateStatusStrip();
             }
@@ -330,6 +378,12 @@ namespace gokiRegeas
             if (GokiRegeas.pathHistoryIndex < GokiRegeas.pathHistory.Count)
             {
                 GokiRegeas.currentFilePath = GokiRegeas.pathHistory[GokiRegeas.pathHistoryIndex];
+                if (GokiRegeas.currentFileBitmap != null)
+                {
+                    GokiRegeas.currentFileBitmap.Dispose();
+                    GokiRegeas.resizedCurrentFileBitmap.Dispose();
+                    GokiRegeas.resizedCurrentFileBitmap = null;
+                }
                 GokiRegeas.currentFileBitmap = (Bitmap)Image.FromFile(GokiRegeas.currentFilePath);
                 pnlDraw.Invalidate();
                 GokiRegeas.startTime = now;
@@ -345,6 +399,7 @@ namespace gokiRegeas
         private void onImageChange()
         {
             lblSpring1.Text = Path.GetFileName(GokiRegeas.currentFilePath);
+            GokiRegeas.runningTime = TimeSpan.FromMilliseconds(0);
         }
 
         private void btnToolStripNext_Click(object sender, EventArgs e)
@@ -376,6 +431,8 @@ namespace gokiRegeas
             mnuViewHorizontalFlip.Checked = GokiRegeas.horizontalFlip;
             mnuViewVerticalFlip.Checked = GokiRegeas.verticalFlip;
             mnuViewBigTimer.Checked = GokiRegeas.showBigTimer;
+            mnuViewAlwaysShowTimer.Checked = GokiRegeas.alwaysShowTimer;
+            mnuViewAlwaysOnTop.Checked = GokiRegeas.alwaysOnTop;
         }
 
         private void nextToolStripMenuItem_Click(object sender, EventArgs e)
@@ -406,6 +463,7 @@ namespace gokiRegeas
             if ( customLengthForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 GokiRegeas.length = (int)customLengthForm.numSeconds.Value * 1000;
+                GokiRegeas.lastUsedTime = GokiRegeas.length;
                 updateToolStrip();
                 GokiRegeas.startTime = DateTime.Now;
             }
@@ -413,7 +471,7 @@ namespace gokiRegeas
 
         private void btnToolStripRestart_Click(object sender, EventArgs e)
         {
-            GokiRegeas.startTime = DateTime.Now;
+            GokiRegeas.runningTime = TimeSpan.FromMilliseconds(0);
         }
 
         private void btnViewTimerBar_Click(object sender, EventArgs e)
@@ -423,6 +481,18 @@ namespace gokiRegeas
             dirty = true;
         }
 
+        private void mnuViewAlwaysShowTimer_Click(object sender, EventArgs e)
+        {
+            GokiRegeas.alwaysShowTimer = !GokiRegeas.alwaysShowTimer;
+            updateMenuStrip();
+            dirty = true;
+        }
 
+        private void mnuViewAlwaysOnTop_Click(object sender, EventArgs e)
+        {
+            GokiRegeas.alwaysOnTop = !GokiRegeas.alwaysOnTop;
+            this.TopMost = GokiRegeas.alwaysOnTop;
+            updateMenuStrip();
+        }
     }
 }

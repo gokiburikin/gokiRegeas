@@ -67,37 +67,25 @@ namespace gokiRegeas
         private void btnClose_Click(object sender, EventArgs e)
         {
             this.Close();
+            GokiRegeas.fillFilePool();
             GokiRegeas.saveSettings();
         }
 
-        public void refreshList()
+        public void updateList( bool clear = false)
         {
             lstPaths.SuspendLayout();
-            foreach (string path in GokiRegeas.paths)
+            if ( clear )
             {
-                ListViewItem item = lstPaths.FindItemWithText(path);
-                   if (  item != null )
-                   {
-                    if (GokiRegeas.sessionPaths.Contains(path))
-                    {
-                        item.ForeColor = Color.Black;
-                    }
-                    else
-                    {
-                        item.ForeColor = Color.DarkGray;
-                    }
-                }
+                lstPaths.Items.Clear();
             }
-            lstPaths.ResumeLayout();
-        }
-
-        public void updateList()
-        {
-            lstPaths.SuspendLayout();
-            lstPaths.Items.Clear();
             foreach ( string path in GokiRegeas.paths)
             {
-                ListViewItem item = new ListViewItem(path);
+                ListViewItem item = lstPaths.FindItemWithText(path);
+                if ( item == null )
+                {
+                    item = new ListViewItem(path);
+                    lstPaths.Items.Add(item);
+                }
                 if (GokiRegeas.sessionPaths.Contains(path))
                 {
                     item.ForeColor = Color.Black;
@@ -106,7 +94,7 @@ namespace gokiRegeas
                 {
                     item.ForeColor = Color.DarkGray;
                 }
-                lstPaths.Items.Add(item);
+                lstPaths.SelectedIndices.Clear();
             }
             lstPaths.ResumeLayout();
         }
@@ -121,7 +109,7 @@ namespace gokiRegeas
                     GokiRegeas.paths.Add(folderBrowserDialog.SelectedPath);
                 }
             }
-            updateList();
+            updateList(true);
         }
 
         private void btnRemovePath_Click(object sender, EventArgs e)
@@ -134,7 +122,7 @@ namespace gokiRegeas
                     GokiRegeas.paths.Remove(selectedPath);
                 }
             }
-            updateList();
+            updateList(true);
         }
 
         private void toggleSelectedPaths()
@@ -150,9 +138,7 @@ namespace gokiRegeas
                 {
                     GokiRegeas.sessionPaths.Add(path);
                 }
-                ///updateList();
-                refreshList();
-                GokiRegeas.fillFilePool();
+                updateList();
             }
         }
 

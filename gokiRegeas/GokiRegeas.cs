@@ -52,8 +52,8 @@ namespace gokiRegeas
             startTime = DateTime.Now;
             pauseTime = DateTime.Now;
             length = lengths[2];
-            runningTime = new TimeSpan();
-            timeRemaining = new TimeSpan();
+            runningTime = TimeSpan.FromMilliseconds(length);
+            timeRemaining = TimeSpan.FromMilliseconds(0);
             paths = new List<string>();
             sessionPaths = new List<string>();
             paths.Add(@".\img\");
@@ -162,6 +162,7 @@ namespace gokiRegeas
                 {
                     lastUsedTime = reader.readDouble();
                     length = lastUsedTime;
+                    runningTime = TimeSpan.FromMilliseconds(length);
                 }
                 catch (Exception ex)
                 {
@@ -215,7 +216,10 @@ namespace gokiRegeas
                             {
                                 if (GokiRegeas.fileFilter.IsMatch(file.ToLower()))
                                 {
-                                    filePool.Add(file);
+                                    if (!filePool.Contains(file))
+                                    {
+                                        filePool.Add(file);
+                                    }
                                 }
                             }
                         }

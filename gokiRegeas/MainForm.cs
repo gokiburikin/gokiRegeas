@@ -14,7 +14,6 @@ namespace gokiRegeas
     public partial class frmMain : Form
     {
         internal static System.Windows.Forms.Timer timer;
-        internal static System.Windows.Forms.Timer memoryTimer;
         internal static int clickX;
         internal static int clickY;
         internal static bool dragging;
@@ -40,10 +39,6 @@ namespace gokiRegeas
             GokiRegeas.loadSettings();
             GokiRegeas.fillFilePool();
             FormClosed += frmMain_FormClosed;
-            memoryTimer = new Timer();
-            memoryTimer.Tick += memoryTimer_Tick;
-            memoryTimer.Interval = 1000;
-            memoryTimer.Start();
             timer = new Timer();
             timer.Tick += timer_Tick;
             timer.Interval = 35;
@@ -70,7 +65,7 @@ namespace gokiRegeas
             this.TopMost = GokiRegeas.alwaysOnTop;
         }
 
-        void memoryTimer_Tick(object sender, EventArgs e)
+        void refreshMemory()
         {
             GokiRegeas.process.Refresh();
             Text = String.Format("gokiRegeas - {0:N0}KB", GokiRegeas.process.PrivateMemorySize64 / 1024);
@@ -295,6 +290,7 @@ namespace gokiRegeas
         private void pathsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             frmPathSettings pathSettingsForm = new frmPathSettings();
+            pathSettingsForm.TopMost = this.TopMost;
             pathSettingsForm.ShowDialog();
         }
 
@@ -302,7 +298,9 @@ namespace gokiRegeas
         {
             if (GokiRegeas.filePool.Count > 0)
             {
-                GokiRegeas.currentFilePath = GokiRegeas.filePool[GokiRegeas.random.Next(GokiRegeas.filePool.Count)];
+                int random = GokiRegeas.random.Next(GokiRegeas.filePool.Count);
+                lblStatus.Text = "File " + random + "/" + GokiRegeas.filePool.Count;
+                GokiRegeas.currentFilePath = GokiRegeas.filePool[random];
                 try
                 {
                     if (GokiRegeas.currentFileBitmap != null)
@@ -316,7 +314,7 @@ namespace gokiRegeas
                     pnlDraw.Invalidate();
                     updateStatusStrip();
                     //GokiRegeas.unpause();
-                    lblStatus.Text = "";
+                    refreshMemory();
                 }
                 catch (Exception ex)
                 {
@@ -353,6 +351,7 @@ namespace gokiRegeas
                 }
                 GokiRegeas.currentFileBitmap = (Bitmap)Image.FromFile(GokiRegeas.currentFilePath);
                 updateStatusStrip();
+                refreshMemory();
             }
             else
             {
@@ -388,6 +387,7 @@ namespace gokiRegeas
                 pnlDraw.Invalidate();
                 GokiRegeas.startTime = now;
                 updateStatusStrip();
+                refreshMemory();
             }
             if (GokiRegeas.paused)
             {
@@ -448,6 +448,8 @@ namespace gokiRegeas
         private void backgroundColorToolStripMenuItem_Click(object sender, EventArgs e)
         {
             frmColorSelection colorSelectionForm = new frmColorSelection();
+            colorSelectionForm.TopMost = this.TopMost;
+
             colorSelectionForm.setColor(GokiRegeas.backColor);
             if (colorSelectionForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
@@ -459,13 +461,14 @@ namespace gokiRegeas
         private void btnToolStripLengths_ButtonClick(object sender, EventArgs e)
         {
             frmCustomLength customLengthForm = new frmCustomLength();
-            customLengthForm.numSeconds.Value = (decimal)GokiRegeas.length/1000;
+            customLengthForm.TopMost = this.TopMost;
+            customLengthForm.numSeconds.Value = (decimal)GokiRegeas.length / 1000;
             if ( customLengthForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 GokiRegeas.length = (int)customLengthForm.numSeconds.Value * 1000;
                 GokiRegeas.lastUsedTime = GokiRegeas.length;
+                GokiRegeas.runningTime = TimeSpan.FromMilliseconds(0);
                 updateToolStrip();
-                GokiRegeas.startTime = DateTime.Now;
             }
         }
 
@@ -493,6 +496,18 @@ namespace gokiRegeas
             GokiRegeas.alwaysOnTop = !GokiRegeas.alwaysOnTop;
             this.TopMost = GokiRegeas.alwaysOnTop;
             updateMenuStrip();
+        }
+
+        private void donateToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string url = @"https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=gokiburikin%40gmail%2ecom&lc=CA&item_name=gokiRegeas&amount=2%2e00&currency_code=CAD&bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted";
+            System.Diagnostics.Process.Start(url);
+        }
+
+        private void byGokiburikinToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string url = @"https://github.com/gokiburikin";
+            System.Diagnostics.Process.Start(url);
         }
     }
 }

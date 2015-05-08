@@ -43,7 +43,10 @@
             this.mnuViewVerticalFlip = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuViewBigTimer = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuViewAlwaysShowTimer = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuViewAlwaysOnTop = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.byGokiburikinToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.donateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.lblHistory = new System.Windows.Forms.ToolStripStatusLabel();
@@ -59,10 +62,9 @@
             this.btnToolStripNext = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.btnToolStripLengths = new System.Windows.Forms.ToolStripSplitButton();
-            this.pnlDraw = new gokiRegeas.DoubleBufferedPanel();
-            this.mnuViewAlwaysOnTop = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.btnToolStripTimerOpacity = new System.Windows.Forms.ToolStripDropDownButton();
+            this.pnlDraw = new gokiRegeas.DoubleBufferedPanel();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -186,11 +188,35 @@
             this.mnuViewAlwaysShowTimer.Text = "Always Show Timer";
             this.mnuViewAlwaysShowTimer.Click += new System.EventHandler(this.mnuViewAlwaysShowTimer_Click);
             // 
+            // mnuViewAlwaysOnTop
+            // 
+            this.mnuViewAlwaysOnTop.Name = "mnuViewAlwaysOnTop";
+            this.mnuViewAlwaysOnTop.Size = new System.Drawing.Size(166, 22);
+            this.mnuViewAlwaysOnTop.Text = "Always On Top";
+            this.mnuViewAlwaysOnTop.Click += new System.EventHandler(this.mnuViewAlwaysOnTop_Click);
+            // 
             // aboutToolStripMenuItem
             // 
+            this.aboutToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.byGokiburikinToolStripMenuItem,
+            this.donateToolStripMenuItem});
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
             this.aboutToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
             this.aboutToolStripMenuItem.Text = "About";
+            // 
+            // byGokiburikinToolStripMenuItem
+            // 
+            this.byGokiburikinToolStripMenuItem.Name = "byGokiburikinToolStripMenuItem";
+            this.byGokiburikinToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.byGokiburikinToolStripMenuItem.Text = "by gokiburikin";
+            this.byGokiburikinToolStripMenuItem.Click += new System.EventHandler(this.byGokiburikinToolStripMenuItem_Click);
+            // 
+            // donateToolStripMenuItem
+            // 
+            this.donateToolStripMenuItem.Name = "donateToolStripMenuItem";
+            this.donateToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.donateToolStripMenuItem.Text = "Donate";
+            this.donateToolStripMenuItem.Click += new System.EventHandler(this.donateToolStripMenuItem_Click);
             // 
             // statusStrip1
             // 
@@ -340,21 +366,6 @@
             this.btnToolStripLengths.Text = "Length";
             this.btnToolStripLengths.ButtonClick += new System.EventHandler(this.btnToolStripLengths_ButtonClick);
             // 
-            // pnlDraw
-            // 
-            this.pnlDraw.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlDraw.Location = new System.Drawing.Point(0, 49);
-            this.pnlDraw.Name = "pnlDraw";
-            this.pnlDraw.Size = new System.Drawing.Size(632, 542);
-            this.pnlDraw.TabIndex = 4;
-            // 
-            // mnuViewAlwaysOnTop
-            // 
-            this.mnuViewAlwaysOnTop.Name = "mnuViewAlwaysOnTop";
-            this.mnuViewAlwaysOnTop.Size = new System.Drawing.Size(166, 22);
-            this.mnuViewAlwaysOnTop.Text = "Always On Top";
-            this.mnuViewAlwaysOnTop.Click += new System.EventHandler(this.mnuViewAlwaysOnTop_Click);
-            // 
             // toolStripSeparator6
             // 
             this.toolStripSeparator6.Name = "toolStripSeparator6";
@@ -368,6 +379,14 @@
             this.btnToolStripTimerOpacity.Name = "btnToolStripTimerOpacity";
             this.btnToolStripTimerOpacity.Size = new System.Drawing.Size(86, 22);
             this.btnToolStripTimerOpacity.Text = "Timer Opacity";
+            // 
+            // pnlDraw
+            // 
+            this.pnlDraw.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlDraw.Location = new System.Drawing.Point(0, 49);
+            this.pnlDraw.Name = "pnlDraw";
+            this.pnlDraw.Size = new System.Drawing.Size(632, 542);
+            this.pnlDraw.TabIndex = 4;
             // 
             // frmMain
             // 
@@ -432,6 +451,8 @@
         private System.Windows.Forms.ToolStripMenuItem mnuViewAlwaysOnTop;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
         private System.Windows.Forms.ToolStripDropDownButton btnToolStripTimerOpacity;
+        private System.Windows.Forms.ToolStripMenuItem byGokiburikinToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem donateToolStripMenuItem;
     }
 }
 

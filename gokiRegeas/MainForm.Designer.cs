@@ -50,7 +50,7 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.lblHistory = new System.Windows.Forms.ToolStripStatusLabel();
-            this.lblSpring1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.lblFilename = new System.Windows.Forms.ToolStripStatusLabel();
             this.lblTimeStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.btnToolStripReset = new System.Windows.Forms.ToolStripButton();
@@ -64,6 +64,7 @@
             this.btnToolStripLengths = new System.Windows.Forms.ToolStripSplitButton();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.btnToolStripTimerOpacity = new System.Windows.Forms.ToolStripDropDownButton();
+            this.mnuViewGreyscale = new System.Windows.Forms.ToolStripMenuItem();
             this.pnlDraw = new gokiRegeas.DoubleBufferedPanel();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -151,6 +152,7 @@
             this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuViewHorizontalFlip,
             this.mnuViewVerticalFlip,
+            this.mnuViewGreyscale,
             this.mnuViewBigTimer,
             this.mnuViewAlwaysShowTimer,
             this.mnuViewAlwaysOnTop});
@@ -207,14 +209,14 @@
             // byGokiburikinToolStripMenuItem
             // 
             this.byGokiburikinToolStripMenuItem.Name = "byGokiburikinToolStripMenuItem";
-            this.byGokiburikinToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.byGokiburikinToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
             this.byGokiburikinToolStripMenuItem.Text = "by gokiburikin";
             this.byGokiburikinToolStripMenuItem.Click += new System.EventHandler(this.byGokiburikinToolStripMenuItem_Click);
             // 
             // donateToolStripMenuItem
             // 
             this.donateToolStripMenuItem.Name = "donateToolStripMenuItem";
-            this.donateToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.donateToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
             this.donateToolStripMenuItem.Text = "Donate";
             this.donateToolStripMenuItem.Click += new System.EventHandler(this.donateToolStripMenuItem_Click);
             // 
@@ -223,7 +225,7 @@
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.lblStatus,
             this.lblHistory,
-            this.lblSpring1,
+            this.lblFilename,
             this.lblTimeStatus});
             this.statusStrip1.Location = new System.Drawing.Point(0, 591);
             this.statusStrip1.Name = "statusStrip1";
@@ -252,12 +254,12 @@
             this.lblHistory.Text = "History";
             this.lblHistory.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // lblSpring1
+            // lblFilename
             // 
-            this.lblSpring1.Name = "lblSpring1";
-            this.lblSpring1.Size = new System.Drawing.Size(317, 17);
-            this.lblSpring1.Spring = true;
-            this.lblSpring1.Text = "Filename";
+            this.lblFilename.Name = "lblFilename";
+            this.lblFilename.Size = new System.Drawing.Size(286, 17);
+            this.lblFilename.Spring = true;
+            this.lblFilename.Text = "Filename";
             // 
             // lblTimeStatus
             // 
@@ -380,6 +382,14 @@
             this.btnToolStripTimerOpacity.Size = new System.Drawing.Size(86, 22);
             this.btnToolStripTimerOpacity.Text = "Timer Opacity";
             // 
+            // mnuViewGreyscale
+            // 
+            this.mnuViewGreyscale.Name = "mnuViewGreyscale";
+            this.mnuViewGreyscale.ShortcutKeyDisplayString = "G";
+            this.mnuViewGreyscale.Size = new System.Drawing.Size(166, 22);
+            this.mnuViewGreyscale.Text = "Greyscale";
+            this.mnuViewGreyscale.Click += new System.EventHandler(this.mnuViewGreyscale_Click);
+            // 
             // pnlDraw
             // 
             this.pnlDraw.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -425,7 +435,7 @@
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel lblStatus;
-        private System.Windows.Forms.ToolStripStatusLabel lblSpring1;
+        private System.Windows.Forms.ToolStripStatusLabel lblFilename;
         private System.Windows.Forms.ToolStripStatusLabel lblTimeStatus;
         private System.Windows.Forms.ToolStrip toolStrip1;
         private System.Windows.Forms.ToolStripButton btnToolStripContinuePause;
@@ -453,6 +463,7 @@
         private System.Windows.Forms.ToolStripDropDownButton btnToolStripTimerOpacity;
         private System.Windows.Forms.ToolStripMenuItem byGokiburikinToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem donateToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem mnuViewGreyscale;
     }
 }
 

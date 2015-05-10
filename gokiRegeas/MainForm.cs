@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -59,10 +61,19 @@ namespace gokiRegeas
                 opacityButton.Click += opacityButton_Click;
                 btnToolStripTimerOpacity.DropDownItems.Add(opacityButton);
             }
+            lblFilename.Click += lblFilename_Click;
             updateToolStrip();
             updateStatusStrip();
             updateMenuStrip();
             this.TopMost = GokiRegeas.alwaysOnTop;
+        }
+
+        void lblFilename_Click(object sender, EventArgs e)
+        {
+            if ( File.Exists(GokiRegeas.currentFilePath) )
+            {
+                Process.Start("explorer.exe", @"/select," + GokiRegeas.currentFilePath);
+            }
         }
 
         void refreshMemory()
@@ -221,69 +232,84 @@ namespace gokiRegeas
 
         void pnlDraw_Paint(object sender, PaintEventArgs e)
         {
-            e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-            e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-            e.Graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
-            if (GokiRegeas.currentFileBitmap != null)
+            try
             {
-                float xAspect = (float)pnlDraw.Width / GokiRegeas.currentFileBitmap.Width;
-                float yAspect = (float)pnlDraw.Height / GokiRegeas.currentFileBitmap.Height;
-                xAspect = Math.Min(yAspect, xAspect);
-                yAspect = xAspect;
-                int width = (int)(GokiRegeas.currentFileBitmap.Width * xAspect);
-                int height = (int)(GokiRegeas.currentFileBitmap.Height * yAspect);
-                if ( GokiRegeas.resizedCurrentFileBitmap == null || GokiRegeas.resizedCurrentFileBitmap.Width != width || GokiRegeas.resizedCurrentFileBitmap.Height != height)
+                e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+                e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                e.Graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
+                if (GokiRegeas.currentFileBitmap != null)
                 {
-                    if ( GokiRegeas.resizedCurrentFileBitmap != null )
+                    float xAspect = (float)pnlDraw.Width / GokiRegeas.currentFileBitmap.Width;
+                    float yAspect = (float)pnlDraw.Height / GokiRegeas.currentFileBitmap.Height;
+                    xAspect = Math.Min(yAspect, xAspect);
+                    yAspect = xAspect;
+                    int width = (int)(GokiRegeas.currentFileBitmap.Width * xAspect);
+                    int height = (int)(GokiRegeas.currentFileBitmap.Height * yAspect);
+                    if (GokiRegeas.resizedCurrentFileBitmap == null || GokiRegeas.resizedCurrentFileBitmap.Width != width || GokiRegeas.resizedCurrentFileBitmap.Height != height)
                     {
-                        GokiRegeas.resizedCurrentFileBitmap.Dispose();
-                        GokiRegeas.resizedCurrentFileBitmap = null;
-                    }
-                    GokiRegeas.resizedCurrentFileBitmap = new Bitmap(GokiRegeas.currentFileBitmap, (int)width, (int)height);
-                }
-                float xOffset = (pnlDraw.Width - width) / 2;
-                float yOffset = (pnlDraw.Height - height) / 2;
-                e.Graphics.TranslateTransform(xOffset + width / 2, yOffset + height / 2);
-                if (GokiRegeas.horizontalFlip)
-                {
-                    e.Graphics.ScaleTransform(-1.0f, 1.0f);
-                }
-                if (GokiRegeas.verticalFlip)
-                {
-                    e.Graphics.ScaleTransform(1.0f, -1.0f);
-                }
-                e.Graphics.RotateTransform((float)GokiRegeas.viewRotation);
-                e.Graphics.TranslateTransform(-width / 2, -height / 2);
-
-                e.Graphics.DrawImage(GokiRegeas.resizedCurrentFileBitmap,0,0);
-                e.Graphics.ResetTransform();
-                if( GokiRegeas.showBigTimer && !GokiRegeas.paused )
-                {
-                    Color light = Color.FromArgb(GokiRegeas.timerOpacity-1, 255, 255, 255);
-                    Color dark = Color.FromArgb(GokiRegeas.timerOpacity - 1, 0, 0, 0);
-                    using (SolidBrush brush = new SolidBrush(dark))
-                    {
-                        if ( GokiRegeas.timeRemaining.Minutes < 1 || GokiRegeas.alwaysShowTimer )
+                        if (GokiRegeas.resizedCurrentFileBitmap != null)
                         {
-                            string text = Math.Ceiling(GokiRegeas.timeRemaining.TotalSeconds).ToString();
-//                            string text = GokiRegeas.timeRemaining.ToString(@"ss");
+                            GokiRegeas.resizedCurrentFileBitmap.Dispose();
+                            GokiRegeas.resizedCurrentFileBitmap = null;
+                        }
+                        GokiRegeas.resizedCurrentFileBitmap = new Bitmap(GokiRegeas.currentFileBitmap, (int)width, (int)height);
+                    }
+                    float xOffset = (pnlDraw.Width - width) / 2;
+                    float yOffset = (pnlDraw.Height - height) / 2;
+                    e.Graphics.TranslateTransform(xOffset + width / 2, yOffset + height / 2);
+                    if (GokiRegeas.horizontalFlip)
+                    {
+                        e.Graphics.ScaleTransform(-1.0f, 1.0f);
+                    }
+                    if (GokiRegeas.verticalFlip)
+                    {
+                        e.Graphics.ScaleTransform(1.0f, -1.0f);
+                    }
+                    e.Graphics.RotateTransform((float)GokiRegeas.viewRotation);
+                    e.Graphics.TranslateTransform(-width / 2, -height / 2);
 
-                            if (GokiRegeas.timeRemaining.TotalSeconds < 10)
+                    e.Graphics.DrawImage(GokiRegeas.resizedCurrentFileBitmap, 0, 0);
+                    e.Graphics.ResetTransform();
+                    if (GokiRegeas.showBigTimer && !GokiRegeas.paused)
+                    {
+                        Color light = Color.FromArgb(GokiRegeas.timerOpacity - 1, 255, 255, 255);
+                        Color dark = Color.FromArgb(GokiRegeas.timerOpacity - 1, 0, 0, 0);
+                        using (SolidBrush brush = new SolidBrush(dark))
+                        {
+                            if (GokiRegeas.timeRemaining.Minutes < 1 || GokiRegeas.alwaysShowTimer)
                             {
-                                text = GokiRegeas.timeRemaining.ToString(@"ss\.ff");
+                                string text = Math.Floor(GokiRegeas.timeRemaining.TotalSeconds).ToString();
+
+                                if (GokiRegeas.timeRemaining.TotalSeconds < 10)
+                                {
+                                    text = GokiRegeas.timeRemaining.ToString(@"ss\.ff");
+                                }
+                                Font font = new Font("Arial", 48);
+                                StringFormat format = new StringFormat();
+                                format.Alignment = StringAlignment.Center;
+                                format.LineAlignment = StringAlignment.Near;
+                                e.Graphics.DrawString(text, font, brush, pnlDraw.ClientRectangle, format);
+                                brush.Color = light;
+                                format.LineAlignment = StringAlignment.Far;
+                                e.Graphics.DrawString(text, font, brush, pnlDraw.ClientRectangle, format);
                             }
-                            Font font = new Font("Arial", 48);
-                            StringFormat format = new StringFormat();
-                            format.Alignment = StringAlignment.Center;
-                            format.LineAlignment = StringAlignment.Near;
-                            e.Graphics.DrawString(text, font, brush, pnlDraw.ClientRectangle, format);
-                            brush.Color = light;
-                            format.LineAlignment = StringAlignment.Far;
-                            e.Graphics.DrawString(text, font, brush, pnlDraw.ClientRectangle, format);
                         }
                     }
-                    
                 }
+            }
+            catch (Exception ex)
+            {
+                if (!File.Exists(GokiRegeas.currentFilePath))
+                {
+                    lblStatus.Text = "File does not exist";
+                }
+                else
+                {
+                    lblStatus.Text = "Failed to paint";
+                }
+                GokiRegeas.filePool.Remove(GokiRegeas.currentFilePath);
+                chooseRandomImage();
+                onImageChange();
             }
         }
 
@@ -299,16 +325,10 @@ namespace gokiRegeas
             if (GokiRegeas.filePool.Count > 0)
             {
                 int random = GokiRegeas.random.Next(GokiRegeas.filePool.Count);
-                lblStatus.Text = "File " + random + "/" + GokiRegeas.filePool.Count;
                 GokiRegeas.currentFilePath = GokiRegeas.filePool[random];
                 try
                 {
-                    if (GokiRegeas.currentFileBitmap != null)
-                    {
-                        GokiRegeas.currentFileBitmap.Dispose();
-                    }
-                    GokiRegeas.currentFileBitmap = (Bitmap)Image.FromFile(GokiRegeas.currentFilePath);
-                    GokiRegeas.resizedCurrentFileBitmap = null;
+                    getBitmap();
                     GokiRegeas.pathHistory.Add(GokiRegeas.currentFilePath);
                     GokiRegeas.pathHistoryIndex = GokiRegeas.pathHistory.Count - 1;
                     pnlDraw.Invalidate();
@@ -332,6 +352,59 @@ namespace gokiRegeas
             Close();
         }
 
+        private void getBitmap()
+        {
+            if ( GokiRegeas.currentFilePath.Length > 0 && File.Exists(GokiRegeas.currentFilePath))
+            {
+                if (GokiRegeas.currentFileBitmap != null)
+                {
+                    GokiRegeas.currentFileBitmap.Dispose();
+                    GokiRegeas.resizedCurrentFileBitmap.Dispose();
+                    GokiRegeas.resizedCurrentFileBitmap = null;
+                }
+                GokiRegeas.currentFileBitmap = (Bitmap)Image.FromFile(GokiRegeas.currentFilePath);
+                if (GokiRegeas.convertToGreyscale)
+                {
+                    GokiRegeas.currentFileBitmap = MakeGrayscale3(GokiRegeas.currentFileBitmap);
+                }
+            }
+        }
+
+        public static Bitmap MakeGrayscale3(Bitmap original)
+        {
+            //create a blank bitmap the same size as original
+            Bitmap newBitmap = new Bitmap(original.Width, original.Height);
+
+            //get a graphics object from the new image
+            Graphics g = Graphics.FromImage(newBitmap);
+
+            //create the grayscale ColorMatrix
+            ColorMatrix colorMatrix = new ColorMatrix(
+               new float[][] 
+              {
+                 new float[] {.3f, .3f, .3f, 0, 0},
+                 new float[] {.59f, .59f, .59f, 0, 0},
+                 new float[] {.11f, .11f, .11f, 0, 0},
+                 new float[] {0, 0, 0, 1, 0},
+                 new float[] {0, 0, 0, 0, 1}
+              });
+
+            //create some image attributes
+            ImageAttributes attributes = new ImageAttributes();
+
+            //set the color matrix attribute
+            attributes.SetColorMatrix(colorMatrix);
+
+            //draw the original image on the new image
+            //using the grayscale color matrix
+            g.DrawImage(original, new Rectangle(0, 0, original.Width, original.Height),
+               0, 0, original.Width, original.Height, GraphicsUnit.Pixel, attributes);
+
+            //dispose the Graphics object
+            g.Dispose();
+            return newBitmap;
+        }
+
         private void historyNext()
         {
             DateTime now = DateTime.Now;
@@ -343,13 +416,7 @@ namespace gokiRegeas
             if (GokiRegeas.pathHistoryIndex <= GokiRegeas.pathHistory.Count - 1)
             {
                 GokiRegeas.currentFilePath = GokiRegeas.pathHistory[GokiRegeas.pathHistoryIndex];
-                if (GokiRegeas.currentFileBitmap != null)
-                {
-                    GokiRegeas.currentFileBitmap.Dispose();
-                    GokiRegeas.resizedCurrentFileBitmap.Dispose();
-                    GokiRegeas.resizedCurrentFileBitmap = null;
-                }
-                GokiRegeas.currentFileBitmap = (Bitmap)Image.FromFile(GokiRegeas.currentFilePath);
+                getBitmap();
                 updateStatusStrip();
                 refreshMemory();
             }
@@ -377,13 +444,7 @@ namespace gokiRegeas
             if (GokiRegeas.pathHistoryIndex < GokiRegeas.pathHistory.Count)
             {
                 GokiRegeas.currentFilePath = GokiRegeas.pathHistory[GokiRegeas.pathHistoryIndex];
-                if (GokiRegeas.currentFileBitmap != null)
-                {
-                    GokiRegeas.currentFileBitmap.Dispose();
-                    GokiRegeas.resizedCurrentFileBitmap.Dispose();
-                    GokiRegeas.resizedCurrentFileBitmap = null;
-                }
-                GokiRegeas.currentFileBitmap = (Bitmap)Image.FromFile(GokiRegeas.currentFilePath);
+                getBitmap();
                 pnlDraw.Invalidate();
                 GokiRegeas.startTime = now;
                 updateStatusStrip();
@@ -398,7 +459,7 @@ namespace gokiRegeas
 
         private void onImageChange()
         {
-            lblSpring1.Text = Path.GetFileName(GokiRegeas.currentFilePath);
+            lblFilename.Text = Path.GetFileName(GokiRegeas.currentFilePath);
             GokiRegeas.runningTime = TimeSpan.FromMilliseconds(0);
         }
 
@@ -433,6 +494,7 @@ namespace gokiRegeas
             mnuViewBigTimer.Checked = GokiRegeas.showBigTimer;
             mnuViewAlwaysShowTimer.Checked = GokiRegeas.alwaysShowTimer;
             mnuViewAlwaysOnTop.Checked = GokiRegeas.alwaysOnTop;
+            mnuViewGreyscale.Checked = GokiRegeas.convertToGreyscale;
         }
 
         private void nextToolStripMenuItem_Click(object sender, EventArgs e)
@@ -508,6 +570,13 @@ namespace gokiRegeas
         {
             string url = @"https://github.com/gokiburikin";
             System.Diagnostics.Process.Start(url);
+        }
+
+        private void mnuViewGreyscale_Click(object sender, EventArgs e)
+        {
+            GokiRegeas.convertToGreyscale = !GokiRegeas.convertToGreyscale;
+            getBitmap();
+            updateMenuStrip();
         }
     }
 }

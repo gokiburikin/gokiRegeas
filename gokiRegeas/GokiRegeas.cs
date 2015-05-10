@@ -44,10 +44,12 @@ namespace gokiRegeas
         internal static Boolean alwaysOnTop;
         internal static int timerOpacity;
         internal static Process process;
+        internal static bool convertToGreyscale;
 
         static GokiRegeas()
         {
             process = Process.GetCurrentProcess();
+            convertToGreyscale = false;
             random = new Random();
             startTime = DateTime.Now;
             pauseTime = DateTime.Now;
@@ -119,6 +121,7 @@ namespace gokiRegeas
             writer.write(lastUsedTime);
             writer.write(alwaysOnTop);
             writer.write(timerOpacity);
+            writer.write(convertToGreyscale);
             File.WriteAllBytes(settingsPath, writer.Data);
         }
 
@@ -183,6 +186,14 @@ namespace gokiRegeas
                 catch (Exception ex)
                 {
                     Console.WriteLine("Could not load timer opacity.");
+                }
+                try
+                {
+                    convertToGreyscale = reader.readBoolean();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Could not load convert to greyscale.");
                 }
             }
             catch (Exception ex)

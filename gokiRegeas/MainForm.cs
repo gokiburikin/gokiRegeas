@@ -15,35 +15,55 @@ namespace gokiRegeas
 {
     public partial class frmMain : Form
     {
-        internal static System.Windows.Forms.Timer timer;
-        internal static int clickX;
-        internal static int clickY;
-        internal static bool dragging;
-        internal static int dragThreshold;
-        internal static bool dirty;
-        internal static int[] timerOpacities = new int[] { 0, 31, 63, 127, 191, 255 };
+        private System.Windows.Forms.Timer timer;
+        private int clickX;
+        private int clickY;
+        private bool rotationDragging;
+        private bool moveDragging;
+        private int dragThreshold;
+        private bool dirty;
+        private int offsetX;
+        private int offsetY;
+        private bool controlKey;
+        private bool shiftKey;
+        private readonly float[] zoomLevels = new float[] { 0.10f, 0.25f, 0.33f, 0.50f, 0.67f, 0.75f, 1.00f, 1.10f, 1.25f, 1.33f, 1.50f, 1.67f, 1.75f, 2.00f };
+        private float zoom;
+        private int zoomIndex;
+        private int[] timerOpacities = new int[] { 0, 31, 63, 127, 191, 255 };
         public frmMain()
         {
+            int updateInterval = 16;
+
+            GokiLibrary.GokiUtility.setInterval(updateInterval);
+            controlKey = false;
+            shiftKey = false;
             GokiRegeas.lastTime = DateTime.Now;
             GokiRegeas.pause();
             InitializeComponent();
+            zoom = 1.0f;
+            zoomIndex = 0;
             clickX = 0;
             clickY = 0;
-            dragging = false;
+            offsetX = 0;
+            offsetY = 0;
+            rotationDragging = false;
+            moveDragging = false;
             dragThreshold = 6;
             dirty = false;
             KeyDown += frmMain_KeyDown;
+            KeyUp += frmMain_KeyUp;
             pnlDraw.Paint += pnlDraw_Paint;
             pnlDraw.Resize += pnlDraw_Resize;
             pnlDraw.MouseDown += pnlDraw_MouseDown;
             pnlDraw.MouseUp += pnlDraw_MouseUp;
             pnlDraw.MouseMove += pnlDraw_MouseMove;
+            pnlDraw.MouseWheel += pnlDraw_MouseWheel;
             GokiRegeas.loadSettings();
             GokiRegeas.fillFilePool();
             FormClosed += frmMain_FormClosed;
             timer = new Timer();
             timer.Tick += timer_Tick;
-            timer.Interval = 35;
+            timer.Interval = updateInterval;
             timer.Start();
             btnToolStripContinuePause.Click += btnToolStripContinuePause_Click;
             pnlDraw.BackColor = GokiRegeas.backColor;
@@ -62,10 +82,49 @@ namespace gokiRegeas
                 btnToolStripTimerOpacity.DropDownItems.Add(opacityButton);
             }
             lblFilename.Click += lblFilename_Click;
+            btnToolStripZoom.Click += lblToolStripZoom_Click;
             updateToolStrip();
             updateStatusStrip();
             updateMenuStrip();
             this.TopMost = GokiRegeas.alwaysOnTop;
+        }
+
+        void frmMain_KeyUp(object sender, KeyEventArgs e)
+        {
+            shiftKey = e.Shift;
+            controlKey = e.Control;
+        }
+
+        void lblToolStripZoom_Click(object sender, EventArgs e)
+        {
+            offsetX = 0;
+            offsetY = 0;
+            updateToolStrip();
+            updateClosestZoomIndex();
+            dirty = true;
+        }
+
+        void pnlDraw_MouseWheel(object sender, MouseEventArgs e)
+        {
+            if ( e.Delta < 0)
+            {
+                zoomIndex--;
+                if ( zoomIndex < 0 )
+                {
+                    zoomIndex = 0;
+                }
+            }
+            else if (e.Delta > 0)
+            {
+                zoomIndex++;
+                if (zoomIndex > zoomLevels.Length -1)
+                {
+                    zoomIndex = zoomLevels.Length - 1;
+                }
+            }
+            zoom = zoomLevels[zoomIndex];
+            updateToolStrip();
+            dirty = true;
         }
 
         void lblFilename_Click(object sender, EventArgs e)
@@ -90,48 +149,102 @@ namespace gokiRegeas
 
         void pnlDraw_MouseUp(object sender, MouseEventArgs e)
         {
-            dragging = false;
+            rotationDragging = false;
+            moveDragging = false;
         }
 
         void pnlDraw_MouseMove(object sender, MouseEventArgs e)
         {
-            if ( Math.Sqrt(Math.Pow(e.X - clickX,2) + Math.Pow(e.Y - clickY,2) )> dragThreshold)
+            if (GokiLibrary.GokiUtility.IntervalPassed)
             {
-                if ( dragging )
+                if (Math.Sqrt(Math.Pow(e.X - clickX, 2) + Math.Pow(e.Y - clickY, 2)) > dragThreshold)
                 {
-                    GokiRegeas.viewRotation = Math.Atan2(pnlDraw.Height/2 - e.Y, pnlDraw.Width/2 - e.X) * 180 / Math.PI - 90;
-                    dirty = true;
+                    if (rotationDragging)
+                    {
+                        if (shiftKey)
+                        {
+                            offsetX += e.X - clickX;
+                            offsetY += e.Y - clickY;
+                            clickX = e.X;
+                            clickY = e.Y;
+                            dirty = true;
+                        }
+                        else if (controlKey)
+                        {
+                            zoom = (float)Math.Sqrt(Math.Pow(pnlDraw.Height / 2 - e.Y, 2) + Math.Pow(pnlDraw.Width / 2 - e.X, 2)) / 100;
+                            if ( zoom > 2 )
+                            {
+                                zoom = 2;
+                            }
+                            else if (zoom < .01f)
+                            {
+                                zoom = .01f;
+                            }
+                            updateToolStrip();
+                            updateClosestZoomIndex();
+                            dirty = true;
+                        }
+                        else
+                        {
+                            GokiRegeas.viewRotation = Math.Atan2(pnlDraw.Height / 2 + offsetY - e.Y, pnlDraw.Width / 2 + offsetX - e.X) * 180 / Math.PI - 90;
+                            dirty = true;
+                        }
+                    }
+                    else if (moveDragging)
+                    {
+                        offsetX += e.X - clickX;
+                        offsetY += e.Y - clickY;
+                        clickX = e.X;
+                        clickY = e.Y;
+                        dirty = true;
+                    }
                 }
             }
         }
 
         void pnlDraw_MouseDown(object sender, MouseEventArgs e)
         {
+            clickX = e.X;
+            clickY = e.Y;
             if (e.Button == System.Windows.Forms.MouseButtons.Left)
             {
-                clickX = e.X;
-                clickY = e.Y;
-                dragging = true;
+                rotationDragging = true;
             }
             else if ( e.Button == System.Windows.Forms.MouseButtons.Right)
             {
                 GokiRegeas.viewRotation = 0;
+                offsetX = 0;
+                offsetY = 0;
                 dirty = true;
+            }
+            else if ( e.Button == System.Windows.Forms.MouseButtons.Middle)
+            {
+                moveDragging = true;
             }
         }
 
         void frmMain_KeyDown(object sender, KeyEventArgs e)
         {
+            shiftKey = e.Shift;
+            controlKey = e.Control;
+
             if (e.KeyCode == Keys.H)
             {
                 GokiRegeas.horizontalFlip = !GokiRegeas.horizontalFlip;
-                pnlDraw.Invalidate();
+                dirty = true;
                 updateMenuStrip();
             }
             if (e.KeyCode == Keys.V)
             {
                 GokiRegeas.verticalFlip = !GokiRegeas.verticalFlip;
-                pnlDraw.Invalidate();
+                dirty = true;
+                updateMenuStrip();
+            }
+            if (e.KeyCode == Keys.G)
+            {
+                GokiRegeas.convertToGreyscale = !GokiRegeas.convertToGreyscale;
+                getBitmap();
+                dirty = true;
                 updateMenuStrip();
             }
             if (e.KeyCode == Keys.E)
@@ -170,6 +283,7 @@ namespace gokiRegeas
                 btnToolStripContinuePause.Text = "Pause";
             }
             btnToolStripLengths.Text = String.Format("{0:N0} seconds", GokiRegeas.length / 1000);
+            btnToolStripZoom.Text = String.Format("{0:P2} Zoom", zoom);
         }
 
         void updateStatusStrip()
@@ -227,7 +341,7 @@ namespace gokiRegeas
 
         void pnlDraw_Resize(object sender, EventArgs e)
         {
-            pnlDraw.Invalidate();
+            dirty = true;
         }
 
         void pnlDraw_Paint(object sender, PaintEventArgs e)
@@ -235,45 +349,34 @@ namespace gokiRegeas
             try
             {
                 e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-                e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.Bilinear;
                 e.Graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
                 if (GokiRegeas.currentFileBitmap != null)
                 {
-                    float xAspect = (float)pnlDraw.Width / GokiRegeas.currentFileBitmap.Width;
-                    float yAspect = (float)pnlDraw.Height / GokiRegeas.currentFileBitmap.Height;
-                    xAspect = Math.Min(yAspect, xAspect);
-                    yAspect = xAspect;
-                    int width = (int)(GokiRegeas.currentFileBitmap.Width * xAspect);
-                    int height = (int)(GokiRegeas.currentFileBitmap.Height * yAspect);
-                    if (GokiRegeas.resizedCurrentFileBitmap == null || GokiRegeas.resizedCurrentFileBitmap.Width != width || GokiRegeas.resizedCurrentFileBitmap.Height != height)
-                    {
-                        if (GokiRegeas.resizedCurrentFileBitmap != null)
-                        {
-                            GokiRegeas.resizedCurrentFileBitmap.Dispose();
-                            GokiRegeas.resizedCurrentFileBitmap = null;
-                        }
-                        GokiRegeas.resizedCurrentFileBitmap = new Bitmap(GokiRegeas.currentFileBitmap, (int)width, (int)height);
-                    }
-                    float xOffset = (pnlDraw.Width - width) / 2;
-                    float yOffset = (pnlDraw.Height - height) / 2;
-                    e.Graphics.TranslateTransform(xOffset + width / 2, yOffset + height / 2);
+                    int width = (int)(GokiRegeas.currentFileBitmap.Width);
+                    int height = (int)(GokiRegeas.currentFileBitmap.Height);
+                    float scaleX = zoom;
+                    float scaleY = zoom;
                     if (GokiRegeas.horizontalFlip)
                     {
-                        e.Graphics.ScaleTransform(-1.0f, 1.0f);
+                        scaleX *= -1;
                     }
                     if (GokiRegeas.verticalFlip)
                     {
-                        e.Graphics.ScaleTransform(1.0f, -1.0f);
+                        scaleY *= -1;
                     }
+                    e.Graphics.TranslateTransform(offsetX + pnlDraw.Width/2,offsetY + pnlDraw.Height/2);
                     e.Graphics.RotateTransform((float)GokiRegeas.viewRotation);
+                    e.Graphics.ScaleTransform(scaleX, scaleY);
                     e.Graphics.TranslateTransform(-width / 2, -height / 2);
 
-                    e.Graphics.DrawImage(GokiRegeas.resizedCurrentFileBitmap, 0, 0);
+                    e.Graphics.DrawImage(GokiRegeas.currentFileBitmap, 0, 0, new Rectangle(0,0,width,height), GraphicsUnit.Pixel);
                     e.Graphics.ResetTransform();
+
                     if (GokiRegeas.showBigTimer && !GokiRegeas.paused)
                     {
-                        Color light = Color.FromArgb(GokiRegeas.timerOpacity - 1, 255, 255, 255);
-                        Color dark = Color.FromArgb(GokiRegeas.timerOpacity - 1, 0, 0, 0);
+                        Color light = Color.FromArgb(GokiRegeas.timerOpacity, 255, 255, 255);
+                        Color dark = Color.FromArgb(GokiRegeas.timerOpacity, 0, 0, 0);
                         using (SolidBrush brush = new SolidBrush(dark))
                         {
                             if (GokiRegeas.timeRemaining.Minutes < 1 || GokiRegeas.alwaysShowTimer)
@@ -284,7 +387,7 @@ namespace gokiRegeas
                                 {
                                     text = GokiRegeas.timeRemaining.ToString(@"ss\.ff");
                                 }
-                                Font font = new Font("Arial", 48);
+                                Font font = new Font("Tahoma", 48);
                                 StringFormat format = new StringFormat();
                                 format.Alignment = StringAlignment.Center;
                                 format.LineAlignment = StringAlignment.Near;
@@ -331,9 +434,8 @@ namespace gokiRegeas
                     getBitmap();
                     GokiRegeas.pathHistory.Add(GokiRegeas.currentFilePath);
                     GokiRegeas.pathHistoryIndex = GokiRegeas.pathHistory.Count - 1;
-                    pnlDraw.Invalidate();
+                    dirty = true;
                     updateStatusStrip();
-                    //GokiRegeas.unpause();
                     refreshMemory();
                 }
                 catch (Exception ex)
@@ -359,13 +461,23 @@ namespace gokiRegeas
                 if (GokiRegeas.currentFileBitmap != null)
                 {
                     GokiRegeas.currentFileBitmap.Dispose();
-                    GokiRegeas.resizedCurrentFileBitmap.Dispose();
-                    GokiRegeas.resizedCurrentFileBitmap = null;
                 }
-                GokiRegeas.currentFileBitmap = (Bitmap)Image.FromFile(GokiRegeas.currentFilePath);
+                using (Bitmap bitmap = (Bitmap)Image.FromFile(GokiRegeas.currentFilePath))
+                {
+                    GokiRegeas.currentFileBitmap = makeBitmapCopy(bitmap);
+                }
+
                 if (GokiRegeas.convertToGreyscale)
                 {
                     GokiRegeas.currentFileBitmap = MakeGrayscale3(GokiRegeas.currentFileBitmap);
+                }
+                if (GokiRegeas.resetViewOnImageChange)
+                {
+                    float xAspect = (float)pnlDraw.Width / GokiRegeas.currentFileBitmap.Width;
+                    float yAspect = (float)pnlDraw.Height / GokiRegeas.currentFileBitmap.Height;
+                    zoom = Math.Min(yAspect, xAspect);
+                    offsetX = 0;
+                    offsetY = 0;
                 }
             }
         }
@@ -405,6 +517,24 @@ namespace gokiRegeas
             return newBitmap;
         }
 
+        public static Bitmap makeBitmapCopy(Bitmap original)
+        {
+            //create a blank bitmap the same size as original
+            Bitmap newBitmap = new Bitmap(original.Width, original.Height);
+
+            //get a graphics object from the new image
+            Graphics g = Graphics.FromImage(newBitmap);
+
+            //draw the original image on the new image
+            //using the grayscale color matrix
+            g.DrawImage(original, new Rectangle(0, 0, original.Width, original.Height),
+               0, 0, original.Width, original.Height, GraphicsUnit.Pixel);
+
+            //dispose the Graphics object
+            g.Dispose();
+            return newBitmap;
+        }
+
         private void historyNext()
         {
             DateTime now = DateTime.Now;
@@ -428,7 +558,7 @@ namespace gokiRegeas
             {
                 GokiRegeas.pauseTime = now;
             }
-            pnlDraw.Invalidate();
+            dirty = true;
             GokiRegeas.startTime = now;
             onImageChange();
         }
@@ -445,7 +575,7 @@ namespace gokiRegeas
             {
                 GokiRegeas.currentFilePath = GokiRegeas.pathHistory[GokiRegeas.pathHistoryIndex];
                 getBitmap();
-                pnlDraw.Invalidate();
+                dirty = true;
                 GokiRegeas.startTime = now;
                 updateStatusStrip();
                 refreshMemory();
@@ -461,6 +591,24 @@ namespace gokiRegeas
         {
             lblFilename.Text = Path.GetFileName(GokiRegeas.currentFilePath);
             GokiRegeas.runningTime = TimeSpan.FromMilliseconds(0);
+            updateToolStrip();
+            updateClosestZoomIndex();
+        }
+
+        private void updateClosestZoomIndex()
+        {
+            int closestIndex = 0;
+            float closestDistance = float.MaxValue;
+            for (int i = 0; i < zoomLevels.Length; i++)
+            {
+                float distance = Math.Abs(zoom - zoomLevels[i]);
+                if (distance < closestDistance)
+                {
+                    closestIndex = i;
+                    closestDistance = distance;
+                }
+            }
+            zoomIndex = closestIndex;
         }
 
         private void btnToolStripNext_Click(object sender, EventArgs e)
@@ -476,14 +624,14 @@ namespace gokiRegeas
         private void mnuViewHorizontalFlip_Click(object sender, EventArgs e)
         {
             GokiRegeas.horizontalFlip = !GokiRegeas.horizontalFlip;
-            pnlDraw.Invalidate();
+            dirty = true;
             updateMenuStrip();
         }
 
         private void mnuViewVerticalFlip_Click(object sender, EventArgs e)
         {
             GokiRegeas.verticalFlip = !GokiRegeas.verticalFlip;
-            pnlDraw.Invalidate();
+            dirty = true;
             updateMenuStrip();
         }
 
@@ -495,6 +643,7 @@ namespace gokiRegeas
             mnuViewAlwaysShowTimer.Checked = GokiRegeas.alwaysShowTimer;
             mnuViewAlwaysOnTop.Checked = GokiRegeas.alwaysOnTop;
             mnuViewGreyscale.Checked = GokiRegeas.convertToGreyscale;
+            mnuViewResetView.Checked = GokiRegeas.resetViewOnImageChange;
         }
 
         private void nextToolStripMenuItem_Click(object sender, EventArgs e)
@@ -576,6 +725,12 @@ namespace gokiRegeas
         {
             GokiRegeas.convertToGreyscale = !GokiRegeas.convertToGreyscale;
             getBitmap();
+            updateMenuStrip();
+        }
+
+        private void mnuViewResetZoom_Click(object sender, EventArgs e)
+        {
+            GokiRegeas.resetViewOnImageChange = !GokiRegeas.resetViewOnImageChange;
             updateMenuStrip();
         }
     }

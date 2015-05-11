@@ -41,9 +41,11 @@
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuViewHorizontalFlip = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuViewVerticalFlip = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuViewGreyscale = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuViewBigTimer = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuViewAlwaysShowTimer = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuViewAlwaysOnTop = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuViewResetView = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.byGokiburikinToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.donateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -64,7 +66,8 @@
             this.btnToolStripLengths = new System.Windows.Forms.ToolStripSplitButton();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.btnToolStripTimerOpacity = new System.Windows.Forms.ToolStripDropDownButton();
-            this.mnuViewGreyscale = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
+            this.btnToolStripZoom = new System.Windows.Forms.ToolStripButton();
             this.pnlDraw = new gokiRegeas.DoubleBufferedPanel();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -155,7 +158,8 @@
             this.mnuViewGreyscale,
             this.mnuViewBigTimer,
             this.mnuViewAlwaysShowTimer,
-            this.mnuViewAlwaysOnTop});
+            this.mnuViewAlwaysOnTop,
+            this.mnuViewResetView});
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
             this.viewToolStripMenuItem.Size = new System.Drawing.Size(41, 20);
             this.viewToolStripMenuItem.Text = "View";
@@ -164,7 +168,7 @@
             // 
             this.mnuViewHorizontalFlip.Name = "mnuViewHorizontalFlip";
             this.mnuViewHorizontalFlip.ShortcutKeyDisplayString = "H";
-            this.mnuViewHorizontalFlip.Size = new System.Drawing.Size(166, 22);
+            this.mnuViewHorizontalFlip.Size = new System.Drawing.Size(215, 22);
             this.mnuViewHorizontalFlip.Text = "Horizontal Flip";
             this.mnuViewHorizontalFlip.Click += new System.EventHandler(this.mnuViewHorizontalFlip_Click);
             // 
@@ -172,30 +176,45 @@
             // 
             this.mnuViewVerticalFlip.Name = "mnuViewVerticalFlip";
             this.mnuViewVerticalFlip.ShortcutKeyDisplayString = "V";
-            this.mnuViewVerticalFlip.Size = new System.Drawing.Size(166, 22);
+            this.mnuViewVerticalFlip.Size = new System.Drawing.Size(215, 22);
             this.mnuViewVerticalFlip.Text = "Vertical Flip";
             this.mnuViewVerticalFlip.Click += new System.EventHandler(this.mnuViewVerticalFlip_Click);
+            // 
+            // mnuViewGreyscale
+            // 
+            this.mnuViewGreyscale.Name = "mnuViewGreyscale";
+            this.mnuViewGreyscale.ShortcutKeyDisplayString = "G";
+            this.mnuViewGreyscale.Size = new System.Drawing.Size(215, 22);
+            this.mnuViewGreyscale.Text = "Greyscale";
+            this.mnuViewGreyscale.Click += new System.EventHandler(this.mnuViewGreyscale_Click);
             // 
             // mnuViewBigTimer
             // 
             this.mnuViewBigTimer.Name = "mnuViewBigTimer";
-            this.mnuViewBigTimer.Size = new System.Drawing.Size(166, 22);
+            this.mnuViewBigTimer.Size = new System.Drawing.Size(215, 22);
             this.mnuViewBigTimer.Text = "Big Timer";
             this.mnuViewBigTimer.Click += new System.EventHandler(this.btnViewTimerBar_Click);
             // 
             // mnuViewAlwaysShowTimer
             // 
             this.mnuViewAlwaysShowTimer.Name = "mnuViewAlwaysShowTimer";
-            this.mnuViewAlwaysShowTimer.Size = new System.Drawing.Size(166, 22);
+            this.mnuViewAlwaysShowTimer.Size = new System.Drawing.Size(215, 22);
             this.mnuViewAlwaysShowTimer.Text = "Always Show Timer";
             this.mnuViewAlwaysShowTimer.Click += new System.EventHandler(this.mnuViewAlwaysShowTimer_Click);
             // 
             // mnuViewAlwaysOnTop
             // 
             this.mnuViewAlwaysOnTop.Name = "mnuViewAlwaysOnTop";
-            this.mnuViewAlwaysOnTop.Size = new System.Drawing.Size(166, 22);
+            this.mnuViewAlwaysOnTop.Size = new System.Drawing.Size(215, 22);
             this.mnuViewAlwaysOnTop.Text = "Always On Top";
             this.mnuViewAlwaysOnTop.Click += new System.EventHandler(this.mnuViewAlwaysOnTop_Click);
+            // 
+            // mnuViewResetView
+            // 
+            this.mnuViewResetView.Name = "mnuViewResetView";
+            this.mnuViewResetView.Size = new System.Drawing.Size(215, 22);
+            this.mnuViewResetView.Text = "Reset View on Image Change";
+            this.mnuViewResetView.Click += new System.EventHandler(this.mnuViewResetZoom_Click);
             // 
             // aboutToolStripMenuItem
             // 
@@ -257,7 +276,7 @@
             // lblFilename
             // 
             this.lblFilename.Name = "lblFilename";
-            this.lblFilename.Size = new System.Drawing.Size(286, 17);
+            this.lblFilename.Size = new System.Drawing.Size(317, 17);
             this.lblFilename.Spring = true;
             this.lblFilename.Text = "Filename";
             // 
@@ -286,7 +305,9 @@
             this.toolStripSeparator3,
             this.btnToolStripLengths,
             this.toolStripSeparator6,
-            this.btnToolStripTimerOpacity});
+            this.btnToolStripTimerOpacity,
+            this.toolStripSeparator7,
+            this.btnToolStripZoom});
             this.toolStrip1.Location = new System.Drawing.Point(0, 24);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
@@ -382,13 +403,19 @@
             this.btnToolStripTimerOpacity.Size = new System.Drawing.Size(86, 22);
             this.btnToolStripTimerOpacity.Text = "Timer Opacity";
             // 
-            // mnuViewGreyscale
+            // toolStripSeparator7
             // 
-            this.mnuViewGreyscale.Name = "mnuViewGreyscale";
-            this.mnuViewGreyscale.ShortcutKeyDisplayString = "G";
-            this.mnuViewGreyscale.Size = new System.Drawing.Size(166, 22);
-            this.mnuViewGreyscale.Text = "Greyscale";
-            this.mnuViewGreyscale.Click += new System.EventHandler(this.mnuViewGreyscale_Click);
+            this.toolStripSeparator7.Name = "toolStripSeparator7";
+            this.toolStripSeparator7.Size = new System.Drawing.Size(6, 25);
+            // 
+            // btnToolStripZoom
+            // 
+            this.btnToolStripZoom.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.btnToolStripZoom.Image = ((System.Drawing.Image)(resources.GetObject("btnToolStripZoom.Image")));
+            this.btnToolStripZoom.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnToolStripZoom.Name = "btnToolStripZoom";
+            this.btnToolStripZoom.Size = new System.Drawing.Size(37, 22);
+            this.btnToolStripZoom.Text = "Zoom";
             // 
             // pnlDraw
             // 
@@ -464,6 +491,9 @@
         private System.Windows.Forms.ToolStripMenuItem byGokiburikinToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem donateToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem mnuViewGreyscale;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
+        private System.Windows.Forms.ToolStripButton btnToolStripZoom;
+        private System.Windows.Forms.ToolStripMenuItem mnuViewResetView;
     }
 }
 

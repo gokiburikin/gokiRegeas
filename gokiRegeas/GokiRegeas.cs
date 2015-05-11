@@ -15,7 +15,7 @@ namespace gokiRegeas
     {
         internal static readonly string settingsPath = @".\settings.dat";
         internal static readonly int[] lengths = new int[] { 10000, 25000, 30000, 45000, 60000, 75000, 90000 };
-
+        
         internal static double length;
         internal static TimeSpan runningTime;
         internal static Random random;
@@ -29,7 +29,6 @@ namespace gokiRegeas
         internal static List<string> filePool;
         internal static string currentFilePath;
         internal static Bitmap currentFileBitmap;
-        internal static Bitmap resizedCurrentFileBitmap;
         internal static Regex fileFilter;
         internal static List<string> pathHistory;
         internal static int pathHistoryIndex;
@@ -45,11 +44,14 @@ namespace gokiRegeas
         internal static int timerOpacity;
         internal static Process process;
         internal static bool convertToGreyscale;
+        internal static bool resetViewOnImageChange;
 
         static GokiRegeas()
         {
+            
             process = Process.GetCurrentProcess();
             convertToGreyscale = false;
+            resetViewOnImageChange = true;
             random = new Random();
             startTime = DateTime.Now;
             pauseTime = DateTime.Now;
@@ -122,6 +124,7 @@ namespace gokiRegeas
             writer.write(alwaysOnTop);
             writer.write(timerOpacity);
             writer.write(convertToGreyscale);
+            writer.write(resetViewOnImageChange);
             File.WriteAllBytes(settingsPath, writer.Data);
         }
 
@@ -151,54 +154,22 @@ namespace gokiRegeas
                         sessionPaths.Add(path);
                     }
                 }
+
                 backColor = reader.readColor();
                 showBigTimer = reader.readBoolean();
-                try
-                {
-                    alwaysShowTimer = reader.readBoolean();
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Could not load always show timer value.");
-                }
-                try
-                {
-                    lastUsedTime = reader.readDouble();
-                    length = lastUsedTime;
-                    runningTime = TimeSpan.FromMilliseconds(length);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Could not load last used time.");
-                }
-                try
-                {
-                    alwaysOnTop = reader.readBoolean();
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Could not load last used time.");
-                }
-                try
-                {
-                    timerOpacity= reader.readInt();
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Could not load timer opacity.");
-                }
-                try
-                {
-                    convertToGreyscale = reader.readBoolean();
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Could not load convert to greyscale.");
-                }
+                alwaysShowTimer = reader.readBoolean();
+                lastUsedTime = reader.readDouble();
+                length = lastUsedTime;
+                runningTime = TimeSpan.FromMilliseconds(length);
+                timerOpacity = reader.readInt();
+                alwaysOnTop = reader.readBoolean();
+                convertToGreyscale = reader.readBoolean();
+                resetViewOnImageChange = reader.readBoolean();
+              
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Could not load settings.");
+                Console.WriteLine("Error while loading settings.");
             }
         }
 

@@ -8,14 +8,17 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace gokiRegeas
 {
     internal class GokiRegeas
     {
-        internal static readonly string settingsPath = @".\settings.dat";
+        internal static readonly string settingsPath = @".\settings.json";
         internal static readonly int[] lengths = new int[] { 10000, 25000, 30000, 45000, 60000, 75000, 90000 };
-        
+        internal static readonly int[] updateIntervals = new int[] { 15, 30, 40, 100, 500 };
+
+        internal static Settings settings;
         internal static double length;
         internal static TimeSpan runningTime;
         internal static Random random;
@@ -24,44 +27,30 @@ namespace gokiRegeas
         internal static DateTime pauseTime;
         internal static TimeSpan timeRemaining;
         internal static bool paused;
-        internal static List<string> paths;
-        internal static List<string> sessionPaths;
         internal static List<string> filePool;
         internal static string currentFilePath;
         internal static Bitmap currentFileBitmap;
         internal static Regex fileFilter;
         internal static List<string> pathHistory;
         internal static int pathHistoryIndex;
-        internal static Color backColor;
         internal static bool horizontalFlip;
         internal static bool verticalFlip;
         internal static double viewRotation;
-        internal static bool showBigTimer;
-        internal static bool alwaysShowTimer;
         internal static double percentage;
         internal static double lastUsedTime;
-        internal static Boolean alwaysOnTop;
-        internal static int timerOpacity;
         internal static Process process;
-        internal static bool convertToGreyscale;
-        internal static bool resetViewOnImageChange;
 
+        
         static GokiRegeas()
         {
-            
+            settings = new Settings();
             process = Process.GetCurrentProcess();
-            convertToGreyscale = false;
-            resetViewOnImageChange = true;
             random = new Random();
             startTime = DateTime.Now;
             pauseTime = DateTime.Now;
             length = lengths[2];
             runningTime = TimeSpan.FromMilliseconds(length);
             timeRemaining = TimeSpan.FromMilliseconds(0);
-            paths = new List<string>();
-            sessionPaths = new List<string>();
-            paths.Add(@".\img\");
-            backColor = Color.DarkSlateGray;
             currentFilePath = "";
             currentFileBitmap = null;
             fileFilter = new Regex(@".*(\.jpg|\.jpeg|\.png|\.gif|\.bmp)");
@@ -72,12 +61,8 @@ namespace gokiRegeas
             horizontalFlip = false;
             verticalFlip = false;
             viewRotation = 0;
-            showBigTimer = false;
-            alwaysShowTimer = true;
             percentage = 0;
             lastUsedTime = 30000;
-            alwaysOnTop = false;
-            timerOpacity = 10;
         }
 
         internal static void pause()
@@ -106,70 +91,19 @@ namespace gokiRegeas
 
         internal static void saveSettings()
         {
-            AutoSizeGokiBytesWriter writer = new AutoSizeGokiBytesWriter();
-            writer.write(paths.Count);
-            foreach (string path in paths)
-            {
-                writer.write(path);
-            }
-            writer.write(sessionPaths.Count);
-            foreach (string path in sessionPaths)
-            {
-                writer.write(path);
-            }
-            writer.write(backColor);
-            writer.write(showBigTimer);
-            writer.write(alwaysShowTimer);
-            writer.write(lastUsedTime);
-            writer.write(alwaysOnTop);
-            writer.write(timerOpacity);
-            writer.write(convertToGreyscale);
-            writer.write(resetViewOnImageChange);
-            File.WriteAllBytes(settingsPath, writer.Data);
+            File.WriteAllText(settingsPath, JsonConvert.SerializeObject(settings,Formatting.Indented));
         }
 
         internal static void loadSettings()
         {
             try
             {
-                if (!File.Exists(settingsPath))
-                {
-                    saveSettings();
-                }
-                paths.Clear();
-                sessionPaths.Clear();
-                GokiBytesReader reader = new GokiBytesReader(File.ReadAllBytes(settingsPath));
-
-                int pathCount = reader.readInt();
-                for (int i = 0; i < pathCount; i++)
-                {
-                    paths.Add(reader.readString());
-                }
-                int sessionPathCount = reader.readInt();
-                for (int i = 0; i < sessionPathCount; i++)
-                {
-                    string path = reader.readString();
-                    if (paths.Contains(path))
-                    {
-                        sessionPaths.Add(path);
-                    }
-                }
-
-                backColor = reader.readColor();
-                showBigTimer = reader.readBoolean();
-                alwaysShowTimer = reader.readBoolean();
-                lastUsedTime = reader.readDouble();
-                length = lastUsedTime;
-                runningTime = TimeSpan.FromMilliseconds(length);
-                timerOpacity = reader.readInt();
-                alwaysOnTop = reader.readBoolean();
-                convertToGreyscale = reader.readBoolean();
-                resetViewOnImageChange = reader.readBoolean();
-              
+                settings = JsonConvert.DeserializeObject<Settings>(File.ReadAllText(settingsPath));
             }
-            catch (Exception ex)
+            catch ( Exception ex)
             {
-                Console.WriteLine("Error while loading settings.");
+                settings = new Settings();
+                Console.WriteLine("Could not load settings.");
             }
         }
 
@@ -177,7 +111,7 @@ namespace gokiRegeas
         {
             filePool.Clear();
 
-            foreach (string path in sessionPaths)
+            foreach (string path in settings.SessionPaths)
             {
                 try
                 {

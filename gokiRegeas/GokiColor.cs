@@ -120,6 +120,16 @@ namespace GokiLibrary
             data[3] = (byte)(argb >> 24);
         }
 
+        public static float average(Color color)
+        {
+            return (color.R + color.B + color.G) / 3.0f;
+        }
+
+        public static int sum(Color color)
+        {
+            return color.R + color.B + color.G;
+        }
+
         public static Color transparent(Color original, byte alpha)
         {
             return Color.FromArgb(alpha, original.R, original.G, original.B);

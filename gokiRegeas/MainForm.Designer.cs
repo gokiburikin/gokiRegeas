@@ -33,6 +33,7 @@
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.nextToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.previousToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importFilepathsFromClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -68,6 +69,10 @@
             this.btnToolStripTimerOpacity = new System.Windows.Forms.ToolStripDropDownButton();
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.btnToolStripZoom = new System.Windows.Forms.ToolStripButton();
+            this.mnuViewUpdateInterval = new System.Windows.Forms.ToolStripMenuItem();
+            this.lblFlagBicubic = new System.Windows.Forms.ToolStripStatusLabel();
+            this.lblMemory = new System.Windows.Forms.ToolStripStatusLabel();
+            this.lblCpu = new System.Windows.Forms.ToolStripStatusLabel();
             this.pnlDraw = new gokiRegeas.DoubleBufferedPanel();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -84,7 +89,7 @@
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.menuStrip1.Size = new System.Drawing.Size(632, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(792, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -93,6 +98,7 @@
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.nextToolStripMenuItem,
             this.previousToolStripMenuItem,
+            this.importFilepathsFromClipboardToolStripMenuItem,
             this.toolStripSeparator4,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
@@ -103,7 +109,7 @@
             // 
             this.nextToolStripMenuItem.Name = "nextToolStripMenuItem";
             this.nextToolStripMenuItem.ShortcutKeyDisplayString = "E";
-            this.nextToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
+            this.nextToolStripMenuItem.Size = new System.Drawing.Size(225, 22);
             this.nextToolStripMenuItem.Text = "Next";
             this.nextToolStripMenuItem.Click += new System.EventHandler(this.nextToolStripMenuItem_Click);
             // 
@@ -111,19 +117,26 @@
             // 
             this.previousToolStripMenuItem.Name = "previousToolStripMenuItem";
             this.previousToolStripMenuItem.ShortcutKeyDisplayString = "Q";
-            this.previousToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
+            this.previousToolStripMenuItem.Size = new System.Drawing.Size(225, 22);
             this.previousToolStripMenuItem.Text = "Previous";
             this.previousToolStripMenuItem.Click += new System.EventHandler(this.previousToolStripMenuItem_Click);
+            // 
+            // importFilepathsFromClipboardToolStripMenuItem
+            // 
+            this.importFilepathsFromClipboardToolStripMenuItem.Name = "importFilepathsFromClipboardToolStripMenuItem";
+            this.importFilepathsFromClipboardToolStripMenuItem.Size = new System.Drawing.Size(225, 22);
+            this.importFilepathsFromClipboardToolStripMenuItem.Text = "Import Filepaths from Clipboard";
+            this.importFilepathsFromClipboardToolStripMenuItem.Click += new System.EventHandler(this.importFilepathsFromClipboardToolStripMenuItem_Click);
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(127, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(222, 6);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(225, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -159,7 +172,8 @@
             this.mnuViewBigTimer,
             this.mnuViewAlwaysShowTimer,
             this.mnuViewAlwaysOnTop,
-            this.mnuViewResetView});
+            this.mnuViewResetView,
+            this.mnuViewUpdateInterval});
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
             this.viewToolStripMenuItem.Size = new System.Drawing.Size(41, 20);
             this.viewToolStripMenuItem.Text = "View";
@@ -245,10 +259,13 @@
             this.lblStatus,
             this.lblHistory,
             this.lblFilename,
+            this.lblMemory,
+            this.lblCpu,
+            this.lblFlagBicubic,
             this.lblTimeStatus});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 591);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 551);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(632, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(792, 22);
             this.statusStrip1.SizingGrip = false;
             this.statusStrip1.TabIndex = 2;
             this.statusStrip1.Text = "statusStrip1";
@@ -256,40 +273,42 @@
             // lblStatus
             // 
             this.lblStatus.AutoSize = false;
-            this.lblStatus.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Right;
+            this.lblStatus.BorderSides = ((System.Windows.Forms.ToolStripStatusLabelBorderSides)((System.Windows.Forms.ToolStripStatusLabelBorderSides.Right | System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
             this.lblStatus.BorderStyle = System.Windows.Forms.Border3DStyle.Etched;
             this.lblStatus.Name = "lblStatus";
-            this.lblStatus.Size = new System.Drawing.Size(100, 17);
-            this.lblStatus.Text = "Status";
-            this.lblStatus.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblStatus.Size = new System.Drawing.Size(80, 17);
+            this.lblStatus.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // lblHistory
             // 
             this.lblHistory.AutoSize = false;
-            this.lblHistory.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Right;
+            this.lblHistory.BorderSides = ((System.Windows.Forms.ToolStripStatusLabelBorderSides)((System.Windows.Forms.ToolStripStatusLabelBorderSides.Right | System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
             this.lblHistory.BorderStyle = System.Windows.Forms.Border3DStyle.Etched;
             this.lblHistory.Name = "lblHistory";
-            this.lblHistory.Size = new System.Drawing.Size(100, 17);
-            this.lblHistory.Text = "History";
-            this.lblHistory.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblHistory.Size = new System.Drawing.Size(80, 17);
+            this.lblHistory.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // lblFilename
             // 
+            this.lblFilename.BorderSides = ((System.Windows.Forms.ToolStripStatusLabelBorderSides)((System.Windows.Forms.ToolStripStatusLabelBorderSides.Right | System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
+            this.lblFilename.BorderStyle = System.Windows.Forms.Border3DStyle.Etched;
+            this.lblFilename.IsLink = true;
             this.lblFilename.Name = "lblFilename";
-            this.lblFilename.Size = new System.Drawing.Size(317, 17);
+            this.lblFilename.Size = new System.Drawing.Size(400, 17);
             this.lblFilename.Spring = true;
             this.lblFilename.Text = "Filename";
+            this.lblFilename.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // lblTimeStatus
             // 
             this.lblTimeStatus.AutoSize = false;
-            this.lblTimeStatus.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Left;
+            this.lblTimeStatus.BorderSides = ((System.Windows.Forms.ToolStripStatusLabelBorderSides)((System.Windows.Forms.ToolStripStatusLabelBorderSides.Right | System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
             this.lblTimeStatus.BorderStyle = System.Windows.Forms.Border3DStyle.Etched;
             this.lblTimeStatus.Name = "lblTimeStatus";
             this.lblTimeStatus.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.lblTimeStatus.Size = new System.Drawing.Size(100, 17);
-            this.lblTimeStatus.Text = "Time Status";
-            this.lblTimeStatus.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblTimeStatus.Size = new System.Drawing.Size(60, 17);
+            this.lblTimeStatus.Text = "00:00:00";
+            this.lblTimeStatus.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // toolStrip1
             // 
@@ -311,7 +330,7 @@
             this.toolStrip1.Location = new System.Drawing.Point(0, 24);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.toolStrip1.Size = new System.Drawing.Size(632, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(792, 25);
             this.toolStrip1.TabIndex = 3;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -416,20 +435,57 @@
             this.btnToolStripZoom.Name = "btnToolStripZoom";
             this.btnToolStripZoom.Size = new System.Drawing.Size(37, 22);
             this.btnToolStripZoom.Text = "Zoom";
+            this.btnToolStripZoom.Click += new System.EventHandler(this.btnToolStripZoom_Click);
+            // 
+            // mnuViewUpdateInterval
+            // 
+            this.mnuViewUpdateInterval.Name = "mnuViewUpdateInterval";
+            this.mnuViewUpdateInterval.Size = new System.Drawing.Size(215, 22);
+            this.mnuViewUpdateInterval.Text = "Update Interval";
+            // 
+            // lblFlagBicubic
+            // 
+            this.lblFlagBicubic.BorderSides = ((System.Windows.Forms.ToolStripStatusLabelBorderSides)((System.Windows.Forms.ToolStripStatusLabelBorderSides.Right | System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
+            this.lblFlagBicubic.BorderStyle = System.Windows.Forms.Border3DStyle.Etched;
+            this.lblFlagBicubic.Enabled = false;
+            this.lblFlagBicubic.Name = "lblFlagBicubic";
+            this.lblFlagBicubic.Size = new System.Drawing.Size(17, 17);
+            this.lblFlagBicubic.Text = "B";
+            this.lblFlagBicubic.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            // 
+            // lblMemory
+            // 
+            this.lblMemory.AutoSize = false;
+            this.lblMemory.BorderSides = ((System.Windows.Forms.ToolStripStatusLabelBorderSides)((System.Windows.Forms.ToolStripStatusLabelBorderSides.Right | System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
+            this.lblMemory.BorderStyle = System.Windows.Forms.Border3DStyle.Etched;
+            this.lblMemory.Name = "lblMemory";
+            this.lblMemory.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.lblMemory.Size = new System.Drawing.Size(80, 17);
+            this.lblMemory.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            // 
+            // lblCpu
+            // 
+            this.lblCpu.AutoSize = false;
+            this.lblCpu.BorderSides = ((System.Windows.Forms.ToolStripStatusLabelBorderSides)((System.Windows.Forms.ToolStripStatusLabelBorderSides.Right | System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
+            this.lblCpu.BorderStyle = System.Windows.Forms.Border3DStyle.Etched;
+            this.lblCpu.Name = "lblCpu";
+            this.lblCpu.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.lblCpu.Size = new System.Drawing.Size(60, 17);
+            this.lblCpu.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             // 
             // pnlDraw
             // 
             this.pnlDraw.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlDraw.Location = new System.Drawing.Point(0, 49);
             this.pnlDraw.Name = "pnlDraw";
-            this.pnlDraw.Size = new System.Drawing.Size(632, 542);
+            this.pnlDraw.Size = new System.Drawing.Size(792, 502);
             this.pnlDraw.TabIndex = 4;
             // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(632, 613);
+            this.ClientSize = new System.Drawing.Size(792, 573);
             this.Controls.Add(this.pnlDraw);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.statusStrip1);
@@ -494,6 +550,11 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
         private System.Windows.Forms.ToolStripButton btnToolStripZoom;
         private System.Windows.Forms.ToolStripMenuItem mnuViewResetView;
+        private System.Windows.Forms.ToolStripMenuItem importFilepathsFromClipboardToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem mnuViewUpdateInterval;
+        private System.Windows.Forms.ToolStripStatusLabel lblFlagBicubic;
+        private System.Windows.Forms.ToolStripStatusLabel lblMemory;
+        private System.Windows.Forms.ToolStripStatusLabel lblCpu;
     }
 }
 

@@ -51,9 +51,9 @@ namespace gokiRegeas
                         {
                             files.Add(subfile);
                         }
-                        if (!GokiRegeas.paths.Contains(file))
+                        if (!GokiRegeas.settings.Paths.Contains(file))
                         {
-                            GokiRegeas.paths.Add(file);
+                            GokiRegeas.settings.Paths.Add(file);
                         }
                     }
                 }
@@ -78,7 +78,7 @@ namespace gokiRegeas
             {
                 lstPaths.Items.Clear();
             }
-            foreach ( string path in GokiRegeas.paths)
+            foreach ( string path in GokiRegeas.settings.Paths)
             {
                 ListViewItem item = lstPaths.FindItemWithText(path);
                 if ( item == null )
@@ -86,7 +86,7 @@ namespace gokiRegeas
                     item = new ListViewItem(path);
                     lstPaths.Items.Add(item);
                 }
-                if (GokiRegeas.sessionPaths.Contains(path))
+                if (GokiRegeas.settings.SessionPaths.Contains(path))
                 {
                     item.ForeColor = Color.Black;
                 }
@@ -104,9 +104,9 @@ namespace gokiRegeas
             FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
             if ( folderBrowserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                if ( !GokiRegeas.paths.Contains(folderBrowserDialog.SelectedPath))
+                if ( !GokiRegeas.settings.Paths.Contains(folderBrowserDialog.SelectedPath))
                 {
-                    GokiRegeas.paths.Add(folderBrowserDialog.SelectedPath);
+                    GokiRegeas.settings.Paths.Add(folderBrowserDialog.SelectedPath);
                 }
             }
             updateList(true);
@@ -117,9 +117,9 @@ namespace gokiRegeas
             foreach(int index in lstPaths.SelectedIndices)
             {
                 string selectedPath = lstPaths.Items[index].Text;
-                if ( GokiRegeas.paths.Contains(selectedPath))
+                if ( GokiRegeas.settings.Paths.Contains(selectedPath))
                 {
-                    GokiRegeas.paths.Remove(selectedPath);
+                    GokiRegeas.settings.Paths.Remove(selectedPath);
                 }
             }
             updateList(true);
@@ -130,13 +130,13 @@ namespace gokiRegeas
             foreach (int index in lstPaths.SelectedIndices)
             {
                 string path = lstPaths.Items[index].Text;
-                if (GokiRegeas.sessionPaths.Contains(path))
+                if (GokiRegeas.settings.SessionPaths.Contains(path))
                 {
-                    GokiRegeas.sessionPaths.Remove(path);
+                    GokiRegeas.settings.SessionPaths.Remove(path);
                 }
                 else
                 {
-                    GokiRegeas.sessionPaths.Add(path);
+                    GokiRegeas.settings.SessionPaths.Add(path);
                 }
                 updateList();
             }

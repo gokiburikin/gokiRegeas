@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
@@ -37,6 +38,9 @@ namespace gokiRegeas
         private Bitmap cleanImage;
         private bool isBicubic;
         private PerformanceCounter performanceCounter;
+        private Font bigTimerFont;
+        private Font instructionsFont;
+        private StringFormat stringFormat;
         public frmMain()
         {
             performanceCounter = new PerformanceCounter("Process","% Processor Time",GokiRegeas.process.ProcessName);
@@ -63,6 +67,9 @@ namespace gokiRegeas
             dirty = false;
             imageDirty = false;
             isBicubic = false;
+            bigTimerFont = new Font("Tahoma", 48);
+            instructionsFont = new Font("Tahoma", 18);
+            stringFormat = new StringFormat();
 
             KeyDown += frmMain_KeyDown;
             KeyUp += frmMain_KeyUp;
@@ -75,12 +82,11 @@ namespace gokiRegeas
 
             GokiRegeas.loadSettings();
             GokiRegeas.fillFilePool();
-            GokiLibrary.GokiUtility.setInterval(GokiRegeas.settings.UpdateInterval);
             FormClosing += frmMain_FormClosing;
             timer = new Timer();
             timer.Tick += timer_Tick;
             timer.Interval = GokiRegeas.settings.UpdateInterval;
-            timer.Start();
+            changeInterval(GokiRegeas.settings.UpdateInterval);
 
             performanceTimer = new Timer();
             performanceTimer.Tick += performanceTimer_Tick;
@@ -125,8 +131,7 @@ namespace gokiRegeas
 
         void dropdownItem_Click(object sender, EventArgs e)
         {
-            GokiRegeas.settings.UpdateInterval = (int)((ToolStripMenuItem)sender).Tag;
-            GokiLibrary.GokiUtility.setInterval(GokiRegeas.settings.UpdateInterval);
+            changeInterval((int)((ToolStripMenuItem)sender).Tag);
             updateMenuStrip();
         }
 
@@ -381,9 +386,17 @@ namespace gokiRegeas
             isBicubic = false;
         }
 
-        void timer_Tick(object sender, EventArgs e)
+        void changeInterval( int interval)
         {
             timer.Stop();
+            timer.Interval = interval;
+            GokiRegeas.settings.UpdateInterval = interval;
+            GokiLibrary.GokiUtility.setInterval(interval);
+            timer.Start();
+        }
+
+        void timer_Tick(object sender, EventArgs e)
+        {
             double timePaused = 0;
             if (GokiRegeas.paused)
             {
@@ -395,7 +408,6 @@ namespace gokiRegeas
             }
             GokiRegeas.lastTime = DateTime.Now;
             GokiRegeas.timeRemaining = TimeSpan.FromMilliseconds(GokiRegeas.length - GokiRegeas.runningTime.TotalMilliseconds);
-            updateStatusStrip();
             GokiRegeas.percentage = ((DateTime.Now - GokiRegeas.startTime).TotalMilliseconds - timePaused) / GokiRegeas.length;
             if (GokiRegeas.runningTime.TotalMilliseconds > GokiRegeas.length)
             {
@@ -408,13 +420,28 @@ namespace gokiRegeas
                 makeDirty();
             }
 
-            if ( dirty || (GokiRegeas.settings.ShowBigTimer && !GokiRegeas.paused) )
+            updateStatusStrip();
+            if (dirty || (GokiRegeas.settings.ShowBigTimer && !GokiRegeas.paused))
             {
-                pnlDraw.Invalidate();
+                if (imageDirty)
+                {
+                    pnlDraw.Invalidate();
+                    pnlDraw.Update();
+                    imageDirty = false;
+                }
+                else
+                {
+                    string text = "00.00";
+                    stringFormat.Alignment = StringAlignment.Center;
+                    stringFormat.LineAlignment = StringAlignment.Near;
+                    SizeF size = pnlDraw.CreateGraphics().MeasureString(text,bigTimerFont,pnlDraw.Width,stringFormat);
+                    Rectangle invalidation = new Rectangle(0, 0, 1, 1);
+                    invalidation = new Rectangle((int)(pnlDraw.Width / 2 - size.Width / 2), 0, (int)size.Width, (int)size.Height);
+                    pnlDraw.Invalidate(invalidation);
+                    pnlDraw.Update();
+                }
                 dirty = false;
             }
-            timer.Interval = GokiRegeas.settings.UpdateInterval;
-            timer.Start();
         }
 
         void pnlDraw_Resize(object sender, EventArgs e)
@@ -481,15 +508,14 @@ namespace gokiRegeas
                             gfx.DrawImage(GokiRegeas.currentFileBitmap, 0, 0, new Rectangle(0, 0, width, height), GraphicsUnit.Pixel);
                             gfx.ResetTransform();
                         }
-                        imageDirty = false;
                     }
                     e.Graphics.DrawImageUnscaled(cleanImage, 0, 0);
 
                     if (GokiRegeas.settings.ShowBigTimer && !GokiRegeas.paused)
                     {
-                        Color light = Color.FromArgb(GokiRegeas.settings.TimerOpacity, 255, 255, 255);
                         Color dark = Color.FromArgb(GokiRegeas.settings.TimerOpacity, 0, 0, 0);
-                        using (SolidBrush brush = new SolidBrush(dark))
+                        Color light = Color.FromArgb(GokiRegeas.settings.TimerOpacity, 255, 255, 255);
+                        using (SolidBrush brush = new SolidBrush(light))
                         {
                             if (GokiRegeas.timeRemaining.Minutes < 1 || GokiRegeas.settings.AlwaysShowTimer)
                             {
@@ -499,24 +525,28 @@ namespace gokiRegeas
                                 {
                                     text = GokiRegeas.timeRemaining.ToString(@"ss\.ff");
                                 }
-                                Font font = new Font("Tahoma", 48);
-                                StringFormat format = new StringFormat();
-                                format.Alignment = StringAlignment.Center;
-                                format.LineAlignment = StringAlignment.Near;
-                                e.Graphics.DrawString(text, font, brush, pnlDraw.ClientRectangle, format);
-                                brush.Color = light;
-                                format.LineAlignment = StringAlignment.Far;
-                                e.Graphics.DrawString(text, font, brush, pnlDraw.ClientRectangle, format);
+                                stringFormat.Alignment = StringAlignment.Center;
+                                //e.Graphics.DrawString(text, bigTimerFont, brush, pnlDraw.ClientRectangle, stringFormat);
+                                using (Pen pen = new Pen(dark))
+                                {
+                                    GraphicsPath path = new GraphicsPath();
+                                    path.GetBounds();
+                                    path.AddString(text, bigTimerFont.FontFamily, (int)FontStyle.Bold, 48, new Point(pnlDraw.Width/2, 0), stringFormat);
+                                    e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+                                    e.Graphics.FillPath(brush, path);
+                                    e.Graphics.DrawPath(pen, path);
+                                }
+                                /*brush.Color = light;
+                                stringFormat.LineAlignment = StringAlignment.Far;
+                                e.Graphics.DrawString(text, bigTimerFont, brush, pnlDraw.ClientRectangle, stringFormat);*/
                             }
                         }
                     }
                 }
                 else
                 {
-                    Font font = new Font("Tahoma", 14);
-                    StringFormat format = new StringFormat();
-                    format.Alignment = StringAlignment.Center;
-                    format.LineAlignment = StringAlignment.Center;
+                    stringFormat.Alignment = StringAlignment.Center;
+                    stringFormat.LineAlignment = StringAlignment.Center;
 
                     using (SolidBrush brush = new SolidBrush(Color.White))
                     {
@@ -526,11 +556,11 @@ namespace gokiRegeas
                         }
                         if (GokiRegeas.filePool.Count == 0)
                         {
-                            e.Graphics.DrawString("No files for the session.\nAdd paths in Settings > Paths.", font, brush, pnlDraw.ClientRectangle, format);
+                            e.Graphics.DrawString("No files for the session.\nAdd paths in Settings > Paths.", instructionsFont, brush, pnlDraw.ClientRectangle, stringFormat);
                         }
                         else if ( GokiRegeas.currentFileBitmap == null)
                         {
-                            e.Graphics.DrawString("No current file.\nClick next or continue to begin.", font, brush, pnlDraw.ClientRectangle, format);
+                            e.Graphics.DrawString("No current file.\nClick next or continue to begin.", instructionsFont, brush, pnlDraw.ClientRectangle, stringFormat);
                         }
                     }
                 }
@@ -549,6 +579,7 @@ namespace gokiRegeas
                 chooseRandomImage();
                 onImageChange();
             }
+
         }
 
         private void pathsToolStripMenuItem_Click(object sender, EventArgs e)

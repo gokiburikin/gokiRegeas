@@ -326,6 +326,7 @@ namespace gokiRegeas
             if (e.KeyCode == Keys.Space)
             {
                 GokiRegeas.togglePause();
+                makeDirty();
             }
         }
 
@@ -333,6 +334,7 @@ namespace gokiRegeas
         {
             GokiRegeas.togglePause();
             updateToolStrip();
+            makeDirty();
         }
 
         void updateToolStrip()
@@ -361,6 +363,7 @@ namespace gokiRegeas
             }
             lblTimeStatus.Text = GokiRegeas.timeRemaining.ToString(@"mm\:ss\.ff");
             lblFlagBicubic.Enabled = isBicubic;
+            lblFlagPainting.Enabled = false;
         }
 
         void lengthButton_Click(object sender, EventArgs e)
@@ -400,12 +403,12 @@ namespace gokiRegeas
                 onImageChange();
                 GokiRegeas.startTime = DateTime.Now;
             }
-            if (!isBicubic && (DateTime.Now - viewManipulationTime).TotalMilliseconds > GokiRegeas.settings.QualityAdjustDelay)
+            if ( GokiRegeas.currentFileBitmap != null && !isBicubic && (DateTime.Now - viewManipulationTime).TotalMilliseconds > GokiRegeas.settings.QualityAdjustDelay)
             {
                 makeDirty();
             }
 
-            if ( dirty || GokiRegeas.settings.ShowBigTimer)
+            if ( dirty || (GokiRegeas.settings.ShowBigTimer && !GokiRegeas.paused) )
             {
                 pnlDraw.Invalidate();
                 dirty = false;
@@ -421,6 +424,7 @@ namespace gokiRegeas
 
         void pnlDraw_Paint(object sender, PaintEventArgs e)
         {
+            lblFlagPainting.Enabled = true;
             try
             {
                 e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;

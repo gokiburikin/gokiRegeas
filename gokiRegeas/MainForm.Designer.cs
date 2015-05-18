@@ -74,6 +74,7 @@
             this.lblMemory = new System.Windows.Forms.ToolStripStatusLabel();
             this.lblCpu = new System.Windows.Forms.ToolStripStatusLabel();
             this.pnlDraw = new gokiRegeas.DoubleBufferedPanel();
+            this.lblFlagPainting = new System.Windows.Forms.ToolStripStatusLabel();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -261,6 +262,7 @@
             this.lblFilename,
             this.lblMemory,
             this.lblCpu,
+            this.lblFlagPainting,
             this.lblFlagBicubic,
             this.lblTimeStatus});
             this.statusStrip1.Location = new System.Drawing.Point(0, 551);
@@ -294,7 +296,7 @@
             this.lblFilename.BorderStyle = System.Windows.Forms.Border3DStyle.Etched;
             this.lblFilename.IsLink = true;
             this.lblFilename.Name = "lblFilename";
-            this.lblFilename.Size = new System.Drawing.Size(400, 17);
+            this.lblFilename.Size = new System.Drawing.Size(383, 17);
             this.lblFilename.Spring = true;
             this.lblFilename.Text = "Filename";
             this.lblFilename.TextAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -481,6 +483,16 @@
             this.pnlDraw.Size = new System.Drawing.Size(792, 502);
             this.pnlDraw.TabIndex = 4;
             // 
+            // lblFlagPainting
+            // 
+            this.lblFlagPainting.BorderSides = ((System.Windows.Forms.ToolStripStatusLabelBorderSides)((System.Windows.Forms.ToolStripStatusLabelBorderSides.Right | System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
+            this.lblFlagPainting.BorderStyle = System.Windows.Forms.Border3DStyle.Etched;
+            this.lblFlagPainting.Enabled = false;
+            this.lblFlagPainting.Name = "lblFlagPainting";
+            this.lblFlagPainting.Size = new System.Drawing.Size(17, 17);
+            this.lblFlagPainting.Text = "P";
+            this.lblFlagPainting.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -555,6 +567,7 @@
         private System.Windows.Forms.ToolStripStatusLabel lblFlagBicubic;
         private System.Windows.Forms.ToolStripStatusLabel lblMemory;
         private System.Windows.Forms.ToolStripStatusLabel lblCpu;
+        private System.Windows.Forms.ToolStripStatusLabel lblFlagPainting;
     }
 }
 

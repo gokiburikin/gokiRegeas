@@ -99,6 +99,10 @@ namespace gokiRegeas
             try
             {
                 settings = JsonConvert.DeserializeObject<Settings>(File.ReadAllText(settingsPath));
+                if ( settings.Paths.Count == 0)
+                {
+                    settings.Paths.Add(@".\img\");
+                }
             }
             catch ( Exception ex)
             {

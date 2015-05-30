@@ -43,7 +43,17 @@ namespace gokiRegeas
         private StringFormat stringFormat;
         public frmMain()
         {
-            performanceCounter = new PerformanceCounter("Process","% Processor Time",GokiRegeas.process.ProcessName);
+            InitializeComponent();
+
+            try
+            {
+                performanceCounter = new PerformanceCounter("Process", "% Processor Time", GokiRegeas.process.ProcessName);
+            }
+            catch ( Exception ex)
+            {
+                //MessageBox.Show("Could not initialize performance monitoring.");
+            }
+
 
             Location = Properties.Settings.Default.WindowLocation;
             Size = Properties.Settings.Default.WindowSize;
@@ -54,7 +64,6 @@ namespace gokiRegeas
             GokiRegeas.lastTime = DateTime.Now;
             GokiRegeas.pause();
             viewManipulationTime = DateTime.Now;
-            InitializeComponent();
             zoom = 1.0f;
             zoomIndex = 0;
             clickX = 0;
@@ -137,11 +146,11 @@ namespace gokiRegeas
 
         void frmMain_FormClosing(object sender, FormClosingEventArgs e)
         {
-            GokiRegeas.saveSettings();
             Properties.Settings.Default.WindowLocation = Location;
             Properties.Settings.Default.WindowSize = Size;
             Properties.Settings.Default.WindowState = WindowState;
             Properties.Settings.Default.Save();
+            GokiRegeas.saveSettings();
         }
 
         void frmMain_KeyUp(object sender, KeyEventArgs e)
@@ -200,8 +209,11 @@ namespace gokiRegeas
 
         void refreshCpuUsage()
         {
-            double cpuUsage = performanceCounter.NextValue() / Environment.ProcessorCount;
-            lblCpu.Text = String.Format("{0:N2}%", cpuUsage);
+            if (performanceCounter != null)
+            {
+                double cpuUsage = performanceCounter.NextValue() / Environment.ProcessorCount;
+                lblCpu.Text = String.Format("{0:N2}%", cpuUsage);
+            }
         }
 
         void opacityButton_Click(object sender, EventArgs e)
@@ -354,6 +366,8 @@ namespace gokiRegeas
             }
             btnToolStripLengths.Text = String.Format("{0:N0} seconds", GokiRegeas.length / 1000);
             btnToolStripZoom.Text = String.Format("{0:P2} Zoom", zoom);
+            btnToolStripTimerOpacity.Enabled = GokiRegeas.settings.ShowBigTimer;
+
         }
 
         void updateStatusStrip()
@@ -504,7 +518,6 @@ namespace gokiRegeas
                             gfx.RotateTransform((float)GokiRegeas.viewRotation);
                             gfx.ScaleTransform(scaleX, scaleY);
                             gfx.TranslateTransform(-width / 2, -height / 2);
-
                             gfx.DrawImage(GokiRegeas.currentFileBitmap, 0, 0, new Rectangle(0, 0, width, height), GraphicsUnit.Pixel);
                             gfx.ResetTransform();
                         }
@@ -871,6 +884,7 @@ namespace gokiRegeas
         {
             GokiRegeas.settings.ShowBigTimer = !GokiRegeas.settings.ShowBigTimer;
             updateMenuStrip();
+            updateToolStrip();
             makeDirty();
         }
 
@@ -904,6 +918,7 @@ namespace gokiRegeas
         {
             GokiRegeas.settings.ConvertToGreyscale = !GokiRegeas.settings.ConvertToGreyscale;
             getBitmap();
+            makeDirty();
             updateMenuStrip();
         }
 

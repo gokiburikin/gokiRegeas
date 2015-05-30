@@ -47,6 +47,7 @@
             this.mnuViewAlwaysShowTimer = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuViewAlwaysOnTop = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuViewResetView = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuViewUpdateInterval = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.byGokiburikinToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.donateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -54,6 +55,10 @@
             this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.lblHistory = new System.Windows.Forms.ToolStripStatusLabel();
             this.lblFilename = new System.Windows.Forms.ToolStripStatusLabel();
+            this.lblMemory = new System.Windows.Forms.ToolStripStatusLabel();
+            this.lblCpu = new System.Windows.Forms.ToolStripStatusLabel();
+            this.lblFlagPainting = new System.Windows.Forms.ToolStripStatusLabel();
+            this.lblFlagBicubic = new System.Windows.Forms.ToolStripStatusLabel();
             this.lblTimeStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.btnToolStripReset = new System.Windows.Forms.ToolStripButton();
@@ -69,12 +74,7 @@
             this.btnToolStripTimerOpacity = new System.Windows.Forms.ToolStripDropDownButton();
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.btnToolStripZoom = new System.Windows.Forms.ToolStripButton();
-            this.mnuViewUpdateInterval = new System.Windows.Forms.ToolStripMenuItem();
-            this.lblFlagBicubic = new System.Windows.Forms.ToolStripStatusLabel();
-            this.lblMemory = new System.Windows.Forms.ToolStripStatusLabel();
-            this.lblCpu = new System.Windows.Forms.ToolStripStatusLabel();
             this.pnlDraw = new gokiRegeas.DoubleBufferedPanel();
-            this.lblFlagPainting = new System.Windows.Forms.ToolStripStatusLabel();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -231,6 +231,12 @@
             this.mnuViewResetView.Text = "Reset View on Image Change";
             this.mnuViewResetView.Click += new System.EventHandler(this.mnuViewResetZoom_Click);
             // 
+            // mnuViewUpdateInterval
+            // 
+            this.mnuViewUpdateInterval.Name = "mnuViewUpdateInterval";
+            this.mnuViewUpdateInterval.Size = new System.Drawing.Size(215, 22);
+            this.mnuViewUpdateInterval.Text = "Update Interval";
+            // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -300,6 +306,46 @@
             this.lblFilename.Spring = true;
             this.lblFilename.Text = "Filename";
             this.lblFilename.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // lblMemory
+            // 
+            this.lblMemory.AutoSize = false;
+            this.lblMemory.BorderSides = ((System.Windows.Forms.ToolStripStatusLabelBorderSides)((System.Windows.Forms.ToolStripStatusLabelBorderSides.Right | System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
+            this.lblMemory.BorderStyle = System.Windows.Forms.Border3DStyle.Etched;
+            this.lblMemory.Name = "lblMemory";
+            this.lblMemory.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.lblMemory.Size = new System.Drawing.Size(80, 17);
+            this.lblMemory.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            // 
+            // lblCpu
+            // 
+            this.lblCpu.AutoSize = false;
+            this.lblCpu.BorderSides = ((System.Windows.Forms.ToolStripStatusLabelBorderSides)((System.Windows.Forms.ToolStripStatusLabelBorderSides.Right | System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
+            this.lblCpu.BorderStyle = System.Windows.Forms.Border3DStyle.Etched;
+            this.lblCpu.Name = "lblCpu";
+            this.lblCpu.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.lblCpu.Size = new System.Drawing.Size(60, 17);
+            this.lblCpu.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            // 
+            // lblFlagPainting
+            // 
+            this.lblFlagPainting.BorderSides = ((System.Windows.Forms.ToolStripStatusLabelBorderSides)((System.Windows.Forms.ToolStripStatusLabelBorderSides.Right | System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
+            this.lblFlagPainting.BorderStyle = System.Windows.Forms.Border3DStyle.Etched;
+            this.lblFlagPainting.Enabled = false;
+            this.lblFlagPainting.Name = "lblFlagPainting";
+            this.lblFlagPainting.Size = new System.Drawing.Size(17, 17);
+            this.lblFlagPainting.Text = "P";
+            this.lblFlagPainting.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            // 
+            // lblFlagBicubic
+            // 
+            this.lblFlagBicubic.BorderSides = ((System.Windows.Forms.ToolStripStatusLabelBorderSides)((System.Windows.Forms.ToolStripStatusLabelBorderSides.Right | System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
+            this.lblFlagBicubic.BorderStyle = System.Windows.Forms.Border3DStyle.Etched;
+            this.lblFlagBicubic.Enabled = false;
+            this.lblFlagBicubic.Name = "lblFlagBicubic";
+            this.lblFlagBicubic.Size = new System.Drawing.Size(17, 17);
+            this.lblFlagBicubic.Text = "B";
+            this.lblFlagBicubic.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             // 
             // lblTimeStatus
             // 
@@ -421,8 +467,8 @@
             this.btnToolStripTimerOpacity.Image = ((System.Drawing.Image)(resources.GetObject("btnToolStripTimerOpacity.Image")));
             this.btnToolStripTimerOpacity.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnToolStripTimerOpacity.Name = "btnToolStripTimerOpacity";
-            this.btnToolStripTimerOpacity.Size = new System.Drawing.Size(86, 22);
-            this.btnToolStripTimerOpacity.Text = "Timer Opacity";
+            this.btnToolStripTimerOpacity.Size = new System.Drawing.Size(103, 22);
+            this.btnToolStripTimerOpacity.Text = "Big Timer Opacity";
             // 
             // toolStripSeparator7
             // 
@@ -439,42 +485,6 @@
             this.btnToolStripZoom.Text = "Zoom";
             this.btnToolStripZoom.Click += new System.EventHandler(this.btnToolStripZoom_Click);
             // 
-            // mnuViewUpdateInterval
-            // 
-            this.mnuViewUpdateInterval.Name = "mnuViewUpdateInterval";
-            this.mnuViewUpdateInterval.Size = new System.Drawing.Size(215, 22);
-            this.mnuViewUpdateInterval.Text = "Update Interval";
-            // 
-            // lblFlagBicubic
-            // 
-            this.lblFlagBicubic.BorderSides = ((System.Windows.Forms.ToolStripStatusLabelBorderSides)((System.Windows.Forms.ToolStripStatusLabelBorderSides.Right | System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
-            this.lblFlagBicubic.BorderStyle = System.Windows.Forms.Border3DStyle.Etched;
-            this.lblFlagBicubic.Enabled = false;
-            this.lblFlagBicubic.Name = "lblFlagBicubic";
-            this.lblFlagBicubic.Size = new System.Drawing.Size(17, 17);
-            this.lblFlagBicubic.Text = "B";
-            this.lblFlagBicubic.TextAlign = System.Drawing.ContentAlignment.TopLeft;
-            // 
-            // lblMemory
-            // 
-            this.lblMemory.AutoSize = false;
-            this.lblMemory.BorderSides = ((System.Windows.Forms.ToolStripStatusLabelBorderSides)((System.Windows.Forms.ToolStripStatusLabelBorderSides.Right | System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
-            this.lblMemory.BorderStyle = System.Windows.Forms.Border3DStyle.Etched;
-            this.lblMemory.Name = "lblMemory";
-            this.lblMemory.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.lblMemory.Size = new System.Drawing.Size(80, 17);
-            this.lblMemory.TextAlign = System.Drawing.ContentAlignment.TopLeft;
-            // 
-            // lblCpu
-            // 
-            this.lblCpu.AutoSize = false;
-            this.lblCpu.BorderSides = ((System.Windows.Forms.ToolStripStatusLabelBorderSides)((System.Windows.Forms.ToolStripStatusLabelBorderSides.Right | System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
-            this.lblCpu.BorderStyle = System.Windows.Forms.Border3DStyle.Etched;
-            this.lblCpu.Name = "lblCpu";
-            this.lblCpu.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.lblCpu.Size = new System.Drawing.Size(60, 17);
-            this.lblCpu.TextAlign = System.Drawing.ContentAlignment.TopLeft;
-            // 
             // pnlDraw
             // 
             this.pnlDraw.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -482,16 +492,6 @@
             this.pnlDraw.Name = "pnlDraw";
             this.pnlDraw.Size = new System.Drawing.Size(792, 502);
             this.pnlDraw.TabIndex = 4;
-            // 
-            // lblFlagPainting
-            // 
-            this.lblFlagPainting.BorderSides = ((System.Windows.Forms.ToolStripStatusLabelBorderSides)((System.Windows.Forms.ToolStripStatusLabelBorderSides.Right | System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
-            this.lblFlagPainting.BorderStyle = System.Windows.Forms.Border3DStyle.Etched;
-            this.lblFlagPainting.Enabled = false;
-            this.lblFlagPainting.Name = "lblFlagPainting";
-            this.lblFlagPainting.Size = new System.Drawing.Size(17, 17);
-            this.lblFlagPainting.Text = "P";
-            this.lblFlagPainting.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             // 
             // frmMain
             // 

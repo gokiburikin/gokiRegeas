@@ -91,7 +91,6 @@ namespace gokiRegeas
         {
             Paths = new List<string>();
             SessionPaths = new List<string>();
-            Paths.Add(@".\img\");
             BackColor = Color.White;
             ConvertToGreyscale = false;
             ResetViewOnImageChange = true;
